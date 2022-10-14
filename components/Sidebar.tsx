@@ -2,24 +2,24 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
 
-function Header({ toggleSidebar, isMounted }: any) {
+function Sidebar({ toggleSidebar, isMounted }: any) {
   const router = useRouter();
   const menuItems = [
     {
       href: "/",
-      title: "Home",
+      title: "Chat1",
     },
     {
       href: "/chat",
-      title: "Chat",
+      title: "Chat2",
     },
     {
       href: "/settings",
-      title: "Settings",
+      title: "Chat3",
     },
     {
       href: "/history",
-      title: "History",
+      title: "Chat4",
     },
   ];
 
@@ -44,4 +44,4 @@ function Header({ toggleSidebar, isMounted }: any) {
   );
 }
 
-export default Header;
+export default Sidebar;
