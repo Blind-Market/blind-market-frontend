@@ -108,7 +108,7 @@ export default function Write() {
                 Upload multiple files
               </label>
               <input
-                className="block w-full text-sm text-gray-900 bg-gray-300 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                className="block lg:w-full text-sm text-gray-900 bg-gray-300 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                 id="multiple_files"
                 type="file"
                 onChange={(e) => console.log(e.target.files)}
@@ -117,7 +117,7 @@ export default function Write() {
           </div>
         </div>
         <div className="flex justify-between items-center border-b">
-          <div className="flex flex-wrap items-center gap-4 lg:mx-80 mx-10 my-4">
+          <div className="flex flex-wrap items-center gap-4 lg:mx-80  my-4">
             <button
               onClick={() => {
                 setCancelButtonEffect(true);
