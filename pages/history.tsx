@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { useState } from "react";
 import Body from "../components/Body";
 import TransactionLog from "../components/TransactionLog";
@@ -22,6 +23,7 @@ export enum transactionState {
 export default function History() {
   const [reloadButtonEffect, setReloadButtonEffect] = useState(false);
   const [deleteButtonEffect, setDeleteButtonEffect] = useState(false);
+  const router = useRouter();
   const data: ITransactionLog = {
     product_name: "Example TransactionLog",
     opponent: "Example Opponent",
@@ -120,6 +122,7 @@ export default function History() {
             <button
               onClick={() => {
                 setReloadButtonEffect(true);
+                router.reload();
               }}
               onAnimationEnd={() => setReloadButtonEffect(false)}
               className={`${

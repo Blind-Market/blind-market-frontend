@@ -15,7 +15,7 @@ export const Navbar = () => {
 
   return (
     <>
-      <nav className="flex items-center flex-wrap bg-black p-3 border border-slate-800">
+      <nav className="flex items-center flex-wrap bg-gray-900 p-3 border border-slate-500">
         <Link href="/">
           <a className="inline-flex items-center p-2 gap-4">
             <span className="text-xl text-white font-bold uppercase tracking-wide ">
@@ -26,23 +26,7 @@ export const Navbar = () => {
         <button
           className=" inline-flex p-3 hover:bg-slate-600 rounded lg:hidden text-white ml-auto hover:text-white outline-none"
           onClick={handleClick}
-        >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
-        </button>
-        {/*Note that in this div we will use a ternary operator to decide whether or not to display the content of the div  */}
+        ></button>
         <div
           className={`${
             active ? "" : "hidden"
@@ -53,7 +37,7 @@ export const Navbar = () => {
               <button
                 className={`${
                   createButtonEffect && "animate-wiggle"
-                } bg-blue-500 p-3 text-white rounded hover:bg-blue-700 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center`}
+                } bg-gray-900 p-3 text-white rounded hover:bg-black hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center`}
                 onClick={() => {
                   setCreateButtonEffect(true);
                   setCreateEntryState(true);
@@ -67,7 +51,7 @@ export const Navbar = () => {
               <button
                 className={`${
                   historyButtonEffect && "animate-wiggle"
-                } bg-blue-500 p-3 text-white rounded hover:bg-blue-700 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center`}
+                } bg-gray-900 p-3 text-white rounded hover:bg-black hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center`}
                 onClick={() => {
                   setHistoryButtonEffect(true);
                 }}
@@ -80,7 +64,7 @@ export const Navbar = () => {
               <button
                 className={`${
                   chatButtonEffect && "animate-wiggle"
-                } bg-blue-500 p-3 text-white rounded hover:bg-blue-700 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center`}
+                } bg-gray-900 p-3 text-white rounded hover:bg-black hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center`}
                 onClick={() => {
                   setChatButtonEffect(true);
                 }}
@@ -97,7 +81,7 @@ export const Navbar = () => {
               onAnimationEnd={() => setLoginButtonEffect(false)}
               className={`${
                 loginButtonEffect && "animate-wiggle"
-              } bg-blue-500 p-3 text-white rounded hover:bg-blue-700 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center`}
+              } bg-gray-900 p-3 text-white rounded hover:bg-black hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center`}
             >
               Login
             </button>

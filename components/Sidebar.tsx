@@ -34,9 +34,9 @@ function Sidebar({ isOpen }: any) {
                 className="text-center items-center align-middle justify-center"
               >
                 <a
-                  className={`flex p-2 bg-blue-500 rounded hover:bg-slate-400 cursor-pointer text-white border border-gray-700 font-bold text-lg  text-center items-center align-middle justify-center`}
+                  className={`flex p-2 bg-gray-900 rounded hover:bg-black cursor-pointer text-white border border-gray-700 text-sm  text-center items-center align-middle justify-center hover:border-white`}
                 >
-                  {`${title}`}
+                  ✉️ {`${title}`}
                 </a>
               </Link>
             </li>

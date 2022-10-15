@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { useState } from "react";
 import Body from "../components/Body";
 
@@ -7,7 +8,7 @@ export default function Write() {
   const [content, setContent] = useState("");
   const [submitButtonEffect, setSubmitButtonEffect] = useState(false);
   const [cancelButtonEffect, setCancelButtonEffect] = useState(false);
-
+  const router = useRouter();
   const titleHandler = (e: any) => {
     if (e.target.value.length < 20) {
       setTitle(e.target.value);
@@ -121,11 +122,12 @@ export default function Write() {
             <button
               onClick={() => {
                 setCancelButtonEffect(true);
+                router.push("/");
               }}
               onAnimationEnd={() => setCancelButtonEffect(false)}
               className={`${
                 cancelButtonEffect && "animate-wiggle"
-              } bg-blue-500 p-3 text-white rounded hover:bg-blue-700 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center`}
+              } bg-red-800 p-3 text-white rounded hover:bg-blue-700 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center`}
             >
               Cancel
             </button>
@@ -136,7 +138,7 @@ export default function Write() {
               onAnimationEnd={() => setSubmitButtonEffect(false)}
               className={`${
                 submitButtonEffect && "animate-wiggle"
-              } bg-blue-500 p-3 text-white rounded hover:bg-blue-700 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center`}
+              } bg-blue-700 p-3 text-white rounded hover:bg-blue-700 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center`}
             >
               Publish
             </button>
