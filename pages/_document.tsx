@@ -15,7 +15,7 @@ export default function Document() {
           content="Blind Market, enjoy everything on web3"
         />
       </Head>
-      <body className="bg-red-700 text-black dark:bg-black dark:text-white">
+      <body className="bg-black text-black dark:bg-black dark:text-white">
         <div id="root">
           <Main />
           <NextScript />

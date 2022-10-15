@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
 
-function Sidebar({ toggleSidebar, isMounted }: any) {
+function Sidebar({ isOpen }: any) {
   const router = useRouter();
   const menuItems = [
     {
@@ -29,11 +29,14 @@ function Sidebar({ toggleSidebar, isMounted }: any) {
         <ul>
           {menuItems.map(({ href, title }) => (
             <li className="m-2" key={title}>
-              <Link href={href}>
+              <Link
+                href={href}
+                className="text-center items-center align-middle justify-center"
+              >
                 <a
-                  className={`flex p-2 bg-fuchsia-200 rounded hover:bg-fuchsia-400 cursor-pointer`}
+                  className={`flex p-2 bg-blue-500 rounded hover:bg-slate-400 cursor-pointer text-white border border-gray-700 font-bold text-lg  text-center items-center align-middle justify-center`}
                 >
-                  {title}
+                  {`${title}`}
                 </a>
               </Link>
             </li>

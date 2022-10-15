@@ -3,24 +3,28 @@ import { useState } from "react";
 
 export const Navbar = () => {
   const [active, setActive] = useState(false);
-  const [effect, setEffect] = useState(false);
+  const [historyButtonEffect, setHistoryButtonEffect] = useState(false);
+  const [createButtonEffect, setCreateButtonEffect] = useState(false);
+  const [chatButtonEffect, setChatButtonEffect] = useState(false);
+  const [loginButtonEffect, setLoginButtonEffect] = useState(false);
 
+  const [createEntryState, setCreateEntryState] = useState(false);
   const handleClick = () => {
     setActive(!active);
   };
 
   return (
     <>
-      <nav className="flex items-center flex-wrap bg-green-400 p-3 ">
+      <nav className="flex items-center flex-wrap bg-black p-3 border border-slate-800">
         <Link href="/">
           <a className="inline-flex items-center p-2 gap-4">
-            <span className="text-xl text-white font-bold uppercase tracking-wide">
+            <span className="text-xl text-white font-bold uppercase tracking-wide ">
               Blind Market
             </span>
           </a>
         </Link>
         <button
-          className=" inline-flex p-3 hover:bg-green-600 rounded lg:hidden text-white ml-auto hover:text-white outline-none"
+          className=" inline-flex p-3 hover:bg-slate-600 rounded lg:hidden text-white ml-auto hover:text-white outline-none"
           onClick={handleClick}
         >
           <svg
@@ -45,15 +49,16 @@ export const Navbar = () => {
           }   w-full lg:inline-flex lg:flex-grow lg:w-auto`}
         >
           <div className="lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto w-full lg:items-center items-start gap-2 flex flex-col lg:h-auto">
-            <Link href="/">
+            <Link href="/write">
               <button
                 className={`${
-                  effect && "animate-wiggle"
+                  createButtonEffect && "animate-wiggle"
                 } bg-blue-500 p-3 text-white rounded hover:bg-blue-700 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center`}
                 onClick={() => {
-                  setEffect(true);
+                  setCreateButtonEffect(true);
+                  setCreateEntryState(true);
                 }}
-                onAnimationEnd={() => setEffect(false)}
+                onAnimationEnd={() => setCreateButtonEffect(false)}
               >
                 Create Entry
               </button>
@@ -61,12 +66,12 @@ export const Navbar = () => {
             <Link href="/history">
               <button
                 className={`${
-                  effect && "animate-wiggle"
+                  historyButtonEffect && "animate-wiggle"
                 } bg-blue-500 p-3 text-white rounded hover:bg-blue-700 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center`}
                 onClick={() => {
-                  setEffect(true);
+                  setHistoryButtonEffect(true);
                 }}
-                onAnimationEnd={() => setEffect(false)}
+                onAnimationEnd={() => setHistoryButtonEffect(false)}
               >
                 History
               </button>
@@ -74,24 +79,24 @@ export const Navbar = () => {
             <Link href="/chat">
               <button
                 className={`${
-                  effect && "animate-wiggle"
+                  chatButtonEffect && "animate-wiggle"
                 } bg-blue-500 p-3 text-white rounded hover:bg-blue-700 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center`}
                 onClick={() => {
-                  setEffect(true);
+                  setChatButtonEffect(true);
                 }}
-                onAnimationEnd={() => setEffect(false)}
+                onAnimationEnd={() => setChatButtonEffect(false)}
               >
                 Chats
               </button>
             </Link>
             <button
               onClick={() => {
-                setEffect(true);
+                setLoginButtonEffect(true);
                 alert("Hello!");
               }}
-              onAnimationEnd={() => setEffect(false)}
+              onAnimationEnd={() => setLoginButtonEffect(false)}
               className={`${
-                effect && "animate-wiggle"
+                loginButtonEffect && "animate-wiggle"
               } bg-blue-500 p-3 text-white rounded hover:bg-blue-700 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center`}
             >
               Login

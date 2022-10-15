@@ -1,8 +1,9 @@
+import Body from "../components/Body";
+
 export default function History() {
   return (
-    <div className="flex h-full flex-col justify-center items-center bg-amber-300">
-      <h1 className="text-4xl mb-5 font-bold">History</h1>
-      <span className="text-7xl">📒</span>
+    <div className="bg-blue-500 flex h-full flex-col justify-center items-center">
+      <Body></Body>
     </div>
   );
 }
