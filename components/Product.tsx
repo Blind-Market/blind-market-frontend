@@ -3,16 +3,17 @@ import { IProduct } from "./Body";
 function Product({ product }: any) {
   return (
     <>
-      <div className="max-h-auto lg:mx-4 max-w-xs bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700 mx-auto">
-        <div className="p-5">
-          <img className="rounded-t-lg" src={product.thumbnail_uri} alt="" />
+      <div className="box-content max-w-xs max-h-80 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
+        <a href="#">
+          <img className="rounded-t-lg h-auto" src={product.thumbnail_uri} />
+        </a>
+        <div className="p-5 box-content text-ellipsis">
           <a href="#">
-            <h5 className="overflow-hidden mb-2 text-elipsis text-lg font-bold tracking-tight text-gray-900 dark:text-white">
-              {product.title.slice(0, 20)}{" "}
+            <h5 className="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white text-ellipsis">
+              {product.title.slice(0, 20)}
               {product.title.length > 20 ? "..." : ""}
             </h5>
           </a>
-
           <a
             href="#"
             className="inline-flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
