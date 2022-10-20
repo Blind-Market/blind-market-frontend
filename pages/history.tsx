@@ -65,15 +65,21 @@ export default function History() {
 	};
 
 	return (
-		<div className="bg-black flex h-full flex-col justify-center items-center w-full">
-			<div className="min-h-screen h-full w-full bg-gray-900">
-				<div className="overflow-x-auto relative shadow-md sm:rounded-lg lg:mx-60 lg:my-8 mx-10 my-4 h-fit">
+		<div className="bg-white dark:bg-black flex h-full flex-col justify-center items-center w-full">
+			<div className="min-h-screen h-full w-full dark:bg-black bg-white">
+				<div className="overflow-x-auto relative lg:mx-60 lg:my-8 mx-10 my-4 h-fit">
 					<table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 border h-min">
 						<thead className="text-xs text-gray-500 uppercase border">
 							<tr>
 								<th
 									scope="col"
-									className="py-3 px-6 dark:bg-gray-800 h-min align-middle justify-center text-center items-center"
+									className="py-3 px-6 dark:bg-black h-min align-middle justify-center text-center items-center"
+								>
+									Select
+								</th>
+								<th
+									scope="col"
+									className="py-3 px-6 dark:bg-black h-min align-middle justify-center text-center items-center"
 								>
 									Product name
 								</th>
@@ -85,7 +91,7 @@ export default function History() {
 								</th>
 								<th
 									scope="col"
-									className="py-3 px-6 dark:bg-gray-800 align-middle justify-center text-center items-center"
+									className="py-3 px-6 dark:bg-black align-middle justify-center text-center items-center"
 								>
 									Date
 								</th>
@@ -97,13 +103,13 @@ export default function History() {
 								</th>
 								<th
 									scope="col"
-									className="py-3 px-6 dark:bg-gray-800 align-middle justify-center text-center items-center"
+									className="py-3 px-6 dark:bg-black align-middle justify-center text-center items-center"
 								>
 									TYPE
 								</th>
 								<th
 									scope="col"
-									className="py-3 px-6 dark:bg-gray-800 align-middle justify-center text-center items-center"
+									className="py-3 px-6 dark:bg-black align-middle justify-center text-center items-center"
 								>
 									status
 								</th>

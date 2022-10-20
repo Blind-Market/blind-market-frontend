@@ -26,7 +26,7 @@ export default function Write() {
 	};
 
 	return (
-		<div className="bg-white dark:bg-black flex h-full flex-col justify-center items-center">
+		<div className="bg-white dark:bg-gray-800 flex h-full flex-col justify-center items-center">
 			<div className="min-h-full w-full bg-white dark:bg-black">
 				<div className="grid lg:my-5 bg-white dark:bg-black lg:mx-80  mx-10 my-4 h-fit">
 					<h1 className="text-3xl dark:text-white text-black">
@@ -48,7 +48,7 @@ export default function Write() {
 							onChange={(e) => titleHandler(e)}
 							value={title}
 							aria-describedby="helper-text-explanation"
-							className="bg-white dark:bg-black border dark:text-white border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  "
+							className="bg-white dark:bg-gray-800 border dark:text-white border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  "
 						/>
 						<p
 							id="helper-text-explanation"
@@ -71,7 +71,7 @@ export default function Write() {
 							onChange={(e) => priceHandler(e)}
 							value={price}
 							aria-describedby="helper-text-explanation"
-							className="bg-white dark:bg-black border dark:text-white border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  "
+							className="bg-white dark:bg-gray-800 border dark:text-white border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  "
 						/>
 						<p
 							id="helper-text-explanation"
@@ -88,7 +88,7 @@ export default function Write() {
 					<textarea
 						id="editor"
 						rows={15}
-						className="block lg:px-2 lg:w-full text-lg text-gray-800 bg-white dark:bg-black dark:text-white dark:placeholder-gray-400 border-1 my-2 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+						className="block lg:px-2 lg:w-full text-lg text-gray-800 bg-white dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 border-1 my-2 rounded-lg focus:ring-blue-500 focus:border-blue-500"
 						placeholder="Please explain what you want to sell! Products described in detail are more likely to be sold than those not."
 						onChange={contentHandler}
 						value={content}
