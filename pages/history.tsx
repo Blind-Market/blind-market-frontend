@@ -143,7 +143,7 @@ export default function History() {
 							onAnimationEnd={() => setDeleteButtonEffect(false)}
 							className={`${
 								deleteButtonEffect && "animate-wiggle"
-							} bg-red-500 p-3 text-white rounded hover:bg-blue-700 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center uppercase lg:my-10`}
+							} bg-red-500 p-3 text-white rounded hover:bg-red-700 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center uppercase lg:my-10`}
 						>
 							DELETE
 						</button>

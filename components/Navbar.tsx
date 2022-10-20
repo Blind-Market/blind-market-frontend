@@ -5,14 +5,18 @@ import { useEffect, useState } from "react";
 import { BsFillSunFill, BsFillMoonFill } from "react-icons/bs";
 
 export const Navbar = () => {
-	const [active, setActive] = useState(false);
+	const [connectModalOpen, setConnectModalOpen] = useState(false);
+
 	const [historyButtonEffect, setHistoryButtonEffect] = useState(false);
 	const [createButtonEffect, setCreateButtonEffect] = useState(false);
 	const [chatButtonEffect, setChatButtonEffect] = useState(false);
 	const [loginButtonEffect, setLoginButtonEffect] = useState(false);
-	const [createEntryState, setCreateEntryState] = useState(false);
+	const [connectWalletButtonEffect, setConnectWalletButtonEffect] =
+		useState(false);
+
 	const [mounted, setMounted] = useState(false);
 	const [windowSize, setWindowSize] = useState<any>(0);
+
 	const { theme, setTheme } = useTheme();
 
 	useEffect(() => {
@@ -35,6 +39,11 @@ export const Navbar = () => {
 	return (
 		<>
 			<nav className="flex items-center flex-wrap bg-black dark:bg-black p-3 border dark:border-slate-800 border-white">
+				{connectModalOpen ? (
+					<div className="w-full h-full bg-black"></div>
+				) : (
+					<></>
+				)}
 				<Link href="/">
 					<a className="inline-flex items-center p-2 gap-4">
 						{theme === "light" ? (
@@ -101,7 +110,6 @@ export const Navbar = () => {
 								} bg-blue-600 p-3 text-white rounded hover:bg-blue-800 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center`}
 								onClick={() => {
 									setCreateButtonEffect(true);
-									setCreateEntryState(true);
 								}}
 								onAnimationEnd={() => setCreateButtonEffect(false)}
 							>
@@ -134,18 +142,39 @@ export const Navbar = () => {
 								Chats
 							</button>
 						</Link>
-						<button
-							onClick={() => {
-								setLoginButtonEffect(true);
-								alert("Hello!");
-							}}
-							onAnimationEnd={() => setLoginButtonEffect(false)}
-							className={`${
-								loginButtonEffect && "animate-wiggle"
-							} bg-blue-600 p-3 text-white rounded hover:bg-blue-800 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center`}
-						>
-							Login
-						</button>
+						{windowSize > 760 ? (
+							<button
+								type="button"
+								data-modal-toggle="crypto-modal"
+								className={`${
+									connectWalletButtonEffect && "animate-wiggle"
+								} bg-blue-600 p-3 text-white rounded hover:bg-blue-800 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center align-middle`}
+								onClick={() => {
+									setConnectWalletButtonEffect(true);
+									setConnectModalOpen(true);
+								}}
+								onAnimationEnd={() => setConnectWalletButtonEffect(false)}
+							>
+								<svg
+									aria-hidden="true"
+									className="mr-2 w-4 h-4"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth="2"
+										d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+									></path>
+								</svg>
+								Connect wallet
+							</button>
+						) : (
+							<></>
+						)}
 					</div>
 				</div>
 			</nav>

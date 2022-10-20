@@ -142,19 +142,19 @@ function Body() {
 			</div>
 			<div className="lg:mx-20 lg:my-0 my-4 mx-4 align-middle justify-center items-center text-center">
 				{windowSize > 768 &&
-					category.map((name) => {
-						return <CategoryButton category={name} />;
+					category.map((name, idx) => {
+						return <CategoryButton category={name} key={idx} />;
 					})}
 			</div>
-			<div className="grid p-4 lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4 lg:gap-8 cursor-pointer">
-				{[product, product2, product3].map((p) => (
-					<Product product={p} />
+			<div className="grid p-4 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4 lg:gap-8 cursor-pointer">
+				{[product, product2, product3].map((p, idx) => (
+					<Product product={p} key={idx} />
 				))}
-				{[product, product2, product3].map((p) => (
-					<Product product={p} />
+				{[product, product2, product3].map((p, idx) => (
+					<Product product={p} key={idx} />
 				))}
-				{[product, product2, product3].map((p) => (
-					<Product product={p} />
+				{[product, product2, product3].map((p, idx) => (
+					<Product product={p} key={idx} />
 				))}
 			</div>
 		</div>
