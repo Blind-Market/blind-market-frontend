@@ -3,8 +3,6 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import { ThemeProvider, useTheme } from "next-themes";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { PropsWithChildren, useEffect, useState } from "react";
-import Sidebar from "../components/Sidebar";
 import Layout from "../components/Layout";
 
 const queryClient = new QueryClient();

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Contract } from "web3-eth-contract";
 import { AbiItem } from "web3-utils";
 import Web3 from "web3";
-import { log } from "console";
 
 // const useWeb3 = () => {
 //   const [web3, setWeb3] = useState<Web3 | undefined>(undefined);
