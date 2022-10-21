@@ -86,13 +86,13 @@ function Body() {
       <div className="lg:mx-80 lg:my-0 p-8 align-middle justify-center items-center text-center">
         {theme === "light" ? (
           <Image
-            src="/../public/blindmarket_signature_vertical_primary.png"
+            src="/blindmarket_signature_vertical_primary.png"
             width={250}
             height={200}
           />
         ) : (
           <Image
-            src="/../public/blindmarket_signature_vertical_white.png"
+            src="/blindmarket_signature_vertical_white.png"
             width={250}
             height={200}
           />
