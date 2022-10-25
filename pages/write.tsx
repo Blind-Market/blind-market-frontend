@@ -16,6 +16,7 @@ export default function Write() {
   const [content, setContent] = useState("");
   const [imgFiles, setImgFiles] = useState<any[]>([]);
   const [category, setCategory] = useState("");
+  const [windowSize, setWindowSize] = useState<any>(0);
 
   const [submitButtonEffect, setSubmitButtonEffect] = useState(false);
   const [cancelButtonEffect, setCancelButtonEffect] = useState(false);
@@ -45,8 +46,19 @@ export default function Write() {
 
   useEffect(() => {
     connectWallet();
+    function getWindowSize() {
+      const { innerWidth, innerHeight } = window;
+      return innerWidth;
+    }
+    function handleWindowResize() {
+      setWindowSize(getWindowSize());
+    }
+    window.addEventListener("resize", handleWindowResize);
+    handleWindowResize();
 
-    return () => {};
+    return () => {
+      window.removeEventListener("resize", handleWindowResize);
+    };
   }, [account]);
 
   const titleHandler = (e: any) => {
@@ -129,7 +141,7 @@ export default function Write() {
           content: content,
           price: price,
           account: account,
-          // categories: [category],
+          categories: category,
           content_uri: arrayOfImageCID,
           thumbnail_uri: arrayOfImageCID.length ? arrayOfImageCID[0] : null,
           created_at: new Date(),
@@ -163,12 +175,12 @@ export default function Write() {
       )}
       <div className="bg-white dark:bg-gray-800 flex h-full flex-col justify-center items-center">
         <div className="min-h-full w-full bg-white dark:bg-blind_market">
-          <div className="grid lg:my-5 bg-white dark:bg-blind_market lg:mx-80  mx-10 my-4 h-fit">
+          <div className="grid lg:my-5 bg-white dark:bg-blind_market lg:mx-72  mx-10 my-4 h-fit">
             <h1 className="text-3xl dark:text-white text-black p-4">
               NECESSARY INFO
             </h1>
           </div>
-          <div className="bg-white dark:bg-blind_market mx-10 lg:mx-80 shadow-md p-4">
+          <div className="bg-white dark:bg-blind_market mx-10 lg:mx-72 shadow-md p-4">
             <div className="mr-4 my-4">
               <form>
                 <div className="relative z-0 mb-6 group">
@@ -177,6 +189,8 @@ export default function Write() {
                     className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                     placeholder="Title is necessary"
                     required
+                    value={title}
+                    onChange={titleHandler}
                   />
                   <label
                     htmlFor="title"
@@ -186,7 +200,7 @@ export default function Write() {
               </form>
             </div>
           </div>
-          <div className="bg-white dark:bg-blind_market mx-10 lg:mx-80 shadow-md p-4">
+          <div className="bg-white dark:bg-blind_market mx-10 lg:mx-72 shadow-md p-4">
             <textarea
               id="editor"
               rows={20}
@@ -205,69 +219,154 @@ export default function Write() {
               </p>
             </div>
           </div>
-          <div className="bg-white dark:bg-blind_market mx-10 lg:mx-80 shadow-md p-4">
-            <label
-              htmlFor="categories"
-              className="flex mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 min-w-max"
-            >
-              Select an option
-            </label>
-            <select
-              id="countries"
-              onChange={(e) => setCategory(e.target.value)}
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            >
-              <option selected>Choose a category</option>
-              {CATEGORY.map((value) => (
-                <option value={value}>{value}</option>
-              ))}
-            </select>
-          </div>
-          <div className="bg-white dark:bg-blind_market mx-10 lg:mx-80 shadow-md p-4">
-            <div>
-              <div className="xl:w-72 w-60">
+          <div className="bg-white dark:bg-blind_market mx-10 lg:mx-72 shadow-md p-4 my-4 grid xl:grid-cols-2 grid-cols-1">
+            <div className="grid grid-rows-3">
+              <div>
                 <label
-                  htmlFor="exampleNumber0"
-                  className="form-label inline-block mb-2 text-black dark:text-white"
+                  htmlFor="categories"
+                  className="flex mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 min-w-max"
                 >
-                  Price
+                  Select an option
+                </label>
+                <select
+                  id="countries"
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                >
+                  <option selected>Choose a category</option>
+                  {CATEGORY.map((value) => (
+                    <option value={value}>{value}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <div className="xl:w-72 w-60">
+                  <label
+                    htmlFor="exampleNumber0"
+                    className="form-label inline-block mb-2 text-black dark:text-white"
+                  >
+                    Price
+                  </label>
+                  <input
+                    type="number"
+                    className=" form-control block w-full px-3 py-1.5 text-base font-normal text-gray-800 bg-white dark:bg-blind_market border-b-2 cursor-pointer bg-clip-padding transition ease-in-out m-0 focus:text-gray-700 focus:bg-white border-0 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer  dark:placeholder-gray-400 dark:focus:ring-blue-500"
+                    id="exampleNumber0"
+                    placeholder="Price is necessary info!"
+                    onChange={(e: any) => setPrice(e.target.value)}
+                    value={price}
+                    onClick={(e: any) => console.log(e.target.value)}
+                  />
+                  <p
+                    id="helper-text-explanation"
+                    className="mt-2 text-sm text-gray-500 dark:text-gray-400"
+                  >
+                    Price is necessary info!
+                  </p>
+                </div>
+              </div>
+              <div>
+                <label
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 min-w-max my-4"
+                  htmlFor="multiple_files"
+                >
+                  Upload multiple files
                 </label>
                 <input
-                  type="number"
-                  className=" form-control block w-full px-3 py-1.5 text-base font-normal text-gray-800 bg-white dark:bg-blind_market border-b-2 cursor-pointer bg-clip-padding transition ease-in-out m-0 focus:text-gray-700 focus:bg-white border-0 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer  dark:placeholder-gray-400 dark:focus:ring-blue-500"
-                  id="exampleNumber0"
-                  placeholder="Price is necessary info!"
-                  onChange={(e: any) => setPrice(e.target.value)}
-                  value={price}
-                  onClick={(e: any) => console.log(e.target.value)}
+                  className="block transition ease-in-out text-sm text-gray-800 bg-white dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 border-1 cursor-pointer focus:outline-none "
+                  id="multiple_files"
+                  type="file"
+                  onChange={(e) => imgFilesHandler(e)}
+                  ref={imgRef}
+                  multiple
                 />
-                <p
-                  id="helper-text-explanation"
-                  className="mt-2 text-sm text-gray-500 dark:text-gray-400"
+              </div>
+            </div>
+            <div className="grid grid-rows-3 visible">
+              <div
+                className={`${
+                  title.length > 0
+                    ? "dark:bg-green-200 dark:text-green-800 text-green-700 bg-green-100"
+                    : "text-red-800 dark:text-red-900 bg-red-100 dark:bg-red-200"
+                } p-4 mb-4 text-sm`}
+                role="alert"
+              >
+                <svg
+                  aria-hidden="true"
+                  className="flex-shrink-0 inline w-5 h-5 mr-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  Price is necessary info!
-                </p>
+                  <path
+                    fill-rule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+
+                <span className="font-medium">Title is necessary field!</span>
+                <ul className="mt-1.5 ml-4 list-disc list-inside">
+                  <li className="mt-2">Please input your own title.</li>
+                </ul>
+              </div>
+              <div
+                className={`${
+                  content.length > 0
+                    ? "dark:bg-green-200 dark:text-green-800 text-green-700 bg-green-100"
+                    : "text-red-800 dark:text-red-900 bg-red-100 dark:bg-red-200"
+                } p-4 mb-4 text-sm`}
+                role="alert"
+              >
+                <svg
+                  aria-hidden="true"
+                  className="flex-shrink-0 inline w-5 h-5 mr-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span className="font-medium">
+                  Description is necessary field!
+                </span>
+                <ul className="mt-1.5 ml-4 list-disc list-inside">
+                  <li className="mt-2">Please input some description.</li>
+                </ul>
+              </div>
+              <div
+                className={`${
+                  price >= 100 && price % 100 == 0
+                    ? "dark:bg-green-200 dark:text-green-800 text-green-700 bg-green-100"
+                    : "text-red-800 dark:text-red-900 bg-red-100 dark:bg-red-200"
+                } p-4 mb-4 text-sm`}
+                role="alert"
+              >
+                <svg
+                  aria-hidden="true"
+                  className="flex-shrink-0 inline w-5 h-5 mr-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span className="font-medium">Price is necessary field!</span>
+                <ul className="mt-1.5 ml-4 list-disc list-inside">
+                  <li className="mt-2">Please input proper price.</li>
+                </ul>
               </div>
             </div>
           </div>
-          <div className="bg-white dark:bg-blind_market mx-10 lg:mx-80 shadow-md p-4">
-            <label
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 min-w-max"
-              htmlFor="multiple_files"
-            >
-              Upload multiple files
-            </label>
-            <input
-              className="block transition ease-in-out text-sm text-gray-800 bg-white dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 border-1 cursor-pointer focus:outline-none "
-              id="multiple_files"
-              type="file"
-              onChange={(e) => imgFilesHandler(e)}
-              ref={imgRef}
-              multiple
-            />
-          </div>
           <div className="flex items-center border-b p-4">
-            <div className="flex items-center gap-4 lg:mx-80 my-4 mx-10">
+            <div className="flex items-center gap-4 lg:mx-72 my-4 mx-10">
               <button
                 onClick={() => {
                   cancelHanlder();

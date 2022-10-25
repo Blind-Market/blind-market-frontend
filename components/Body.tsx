@@ -1,6 +1,7 @@
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { CATEGORY } from "../pages/_app";
 import CategoryButton from "./CategoryButton";
 import Product from "./Product";
 
@@ -11,21 +12,6 @@ export interface IProduct {
   price: number;
   starred: number;
 }
-
-export const category = [
-  "all",
-  "digital",
-  "lifestyle",
-  "interior",
-  "kitchen",
-  "beauty",
-  "sports",
-  "fashion",
-  "game",
-  "book",
-  "pet",
-  "other",
-];
 
 function Body() {
   const [windowSize, setWindowSize] = useState<any>(0);
@@ -142,7 +128,7 @@ function Body() {
       </div>
       <div className="lg:mx-20 lg:my-0 my-4 mx-4 align-middle justify-center items-center text-center">
         {windowSize > 768 &&
-          category.map((name, idx) => {
+          CATEGORY.map((name, idx) => {
             return <CategoryButton category={name} key={idx} />;
           })}
       </div>
