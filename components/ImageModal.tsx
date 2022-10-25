@@ -1,6 +1,5 @@
 import ReactDOM from "react-dom";
 import React, { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
 
 function ImageModal({ show, onClose, children, title }: any) {
   const [isBrowser, setIsBrowser] = useState(false);
