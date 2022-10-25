@@ -5,6 +5,21 @@ import { ThemeProvider, useTheme } from "next-themes";
 import { QueryClient, QueryClientProvider } from "react-query";
 import Layout from "../components/Layout";
 
+export const CATEGORY = [
+  "all",
+  "digital",
+  "lifestyle",
+  "interior",
+  "kitchen",
+  "beauty",
+  "sports",
+  "fashion",
+  "game",
+  "book",
+  "pet",
+  "other",
+];
+
 const queryClient = new QueryClient();
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
