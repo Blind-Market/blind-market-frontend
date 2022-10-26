@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navbar } from "./Navbar";
 import Sidebar from "./Sidebar";
+import SubNavbar from "./SubNavbar";
 
 export default function Layout({ children, Menu }: any) {
   const [isOpen, setIsOpen] = useState(true);
@@ -25,7 +26,7 @@ export default function Layout({ children, Menu }: any) {
   return (
     <>
       <div className="min-h-screen flex flex-col">
-        <Navbar />
+        {windowSize > 1024 ? <Navbar /> : <SubNavbar />}
         <div className="flex flex-col md:flex-row flex-1">
           <main className="flex-1">{children}</main>
         </div>

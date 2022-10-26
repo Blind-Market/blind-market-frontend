@@ -5,14 +5,6 @@ import { CATEGORY } from "../pages/_app";
 import CategoryButton from "./CategoryButton";
 import Product from "./Product";
 
-export interface IProduct {
-  cid: string;
-  title: string;
-  thumbnail_uri: string;
-  price: number;
-  starred: number;
-}
-
 function Body() {
   const [windowSize, setWindowSize] = useState<any>(0);
   const [searchInput, setSearchInput] = useState();

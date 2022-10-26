@@ -21,7 +21,7 @@ class MainDocument extends Document {
             content="Blind Market, enjoy everything on web3"
           />
         </Head>
-        <body className="bg-white dark:bg-black text-black dark:text-white">
+        <body className="bg-white dark:bg-blind_market text-black dark:text-white">
           <div id="root">
             <Main />
             <NextScript />

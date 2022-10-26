@@ -40,11 +40,11 @@ const Home: NextPage = () => {
   }
 
   return (
-    <div className="bg-white dark:bg-black flex h-full flex-col justify-center items-center">
+    <div className="bg-white dark:bg-blind_market flex h-full flex-col justify-center items-center">
       {account ? (
         <Body />
       ) : (
-        <div className="bg-white dark:bg-black w-full justify-center items-center align-middle flex-col flex">
+        <div className="bg-white dark:bg-blind_market w-full justify-center items-center align-middle flex-col flex">
           <h1 className="lg:text-4xl text-xl my-5 text-black dark:text-white font-bold">
             Get start with connect your wallet!
           </h1>
