@@ -1,4 +1,6 @@
-function CategoryButton({ category }: any) {
+import React from "react";
+
+const CategoryButton = React.memo(function CategoryButton({ category }: any) {
   const colorHandler = () => {
     switch (category) {
       case "all":
@@ -34,11 +36,12 @@ function CategoryButton({ category }: any) {
       <button
         type="button"
         className={`${colorHandler()} text-white bg-gradient-to-r hover:bg-gradient-to-br focus:ring-4 focus:outline-none shadow-lg font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2`}
+        onClick={() => {}}
       >
         {category}
       </button>
     </>
   );
-}
+});
 
 export default CategoryButton;

@@ -25,12 +25,13 @@ export declare global {
   interface IItem {
     cid: string;
     title: string;
-    seller: string;
-    grade: string;
+    nickname: string;
+    // grade: string;
     price: number;
     description: string;
-    thumbnail_uri: string;
-    content_uri: string[];
+    thumbnailUri: string;
+    images: string[];
+    category: string;
     starred: number;
     view: number;
   }

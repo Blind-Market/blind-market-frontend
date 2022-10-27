@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
-import { Navbar } from "./Navbar";
-import Sidebar from "./Sidebar";
+import React, { useEffect, useState } from "react";
+import Navbar from "./Navbar";
 import SubNavbar from "./SubNavbar";
 
-export default function Layout({ children, Menu }: any) {
+const Layout = React.memo(function Layout({ children, Menu }: any) {
   const [isOpen, setIsOpen] = useState(true);
   const [windowSize, setWindowSize] = useState<any>(0);
 
@@ -33,4 +32,6 @@ export default function Layout({ children, Menu }: any) {
       </div>
     </>
   );
-}
+});
+
+export default Layout;

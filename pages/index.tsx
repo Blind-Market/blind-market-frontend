@@ -23,7 +23,7 @@ const Home: NextPage = () => {
     return () => {
       window.removeEventListener("resize", handleWindowResize);
     };
-  }, [account]);
+  }, []);
 
   async function connectWallet(): Promise<void> {
     //to get around type checking

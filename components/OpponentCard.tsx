@@ -1,11 +1,14 @@
 function OpponentCard({ opponent }: IOpponent | any) {
   return (
-    <button className="flex flex-col w-full bg-transparent p-4 text-justify text-black dark:text-white">
-      <div className="w-full bg-transparent text-white p-4 flex flex-col">
-        <div className="grid grid-cols-4">
-          <div className="col-end-1">
+    <button
+      className="flex flex-col w-full bg-transparent p-2 text-justify text-black dark:text-white"
+      onClick={() => console.log(opponent.nickname)}
+    >
+      <div className="w-full bg-transparent text-white flex flex-col">
+        <div className="flex gap-4 my-auto top-1/2 bottom-auto">
+          <div className="overflow-hidden relative w-10 h-10 bg-gray-100 rounded-full dark:bg-gray-600 my-auto top-1/2 bottom-auto">
             <svg
-              className="relative -left-1 w-12 h-12 text-gray-400"
+              className="absolute -left-1 w-12 h-12 text-gray-400"
               fill="currentColor"
               viewBox="0 0 20 20"
               xmlns="http://www.w3.org/2000/svg"
@@ -23,11 +26,9 @@ function OpponentCard({ opponent }: IOpponent | any) {
               {opponent.last_chatted_msg.slice(0, 15)}
               {opponent.last_chatted_msg.length > 15 ? "..." : ""}
             </p>
+            <p>{opponent.last_chatted_date?.toISOString().slice(0, 10)}</p>
           </div>
         </div>
-        <p className="text-black dark:text-white">
-          {opponent.last_chatted_date?.toISOString().slice(0, 10)}
-        </p>
       </div>
     </button>
   );

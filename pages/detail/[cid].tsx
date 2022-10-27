@@ -1,32 +1,44 @@
-import { Modal } from "flowbite-react";
-import { ModalBody } from "flowbite-react/lib/esm/components/Modal/ModalBody";
-import { useTheme } from "next-themes";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import ImageModal from "../../components/ImageModal";
 import ItemAPI from "../../lib/item";
+import { useAccount } from "../../lib/web3";
 
-function Detail() {
+const Detail = React.memo(function Detail() {
   const router = useRouter();
-  const cid = router.query;
+  const { cid } = router.query;
+  const account = useAccount();
+  const { data } = useQuery(`/item/${cid}`, () =>
+    ItemAPI.getSingleItem(cid, account)
+  );
+
   const [windowSize, setWindowSize] = useState<any>(0);
+  const [starred, setStarred] = useState<any>(data?.starred);
   const [modalOpen, setModalOpen] = useState(false);
   const [imgIndex, setImgIndex] = useState<number>(0);
   const [buyButtonEffect, setBuyButtonEffect] = useState(false);
   const [backButtonEffect, setBackButtonEffect] = useState(false);
-
-  const { theme } = useTheme();
-  const { isLoading, isError, error, data } = useQuery(`/items/${cid}`, () =>
-    ItemAPI.getSingleItem()
-  );
 
   const keydownFunction = useCallback((event: any) => {
     if (event.key === "Escape") {
       setModalOpen(false);
     }
   }, []);
+
+  const setLikeItem = async () => {
+    const res = await ItemAPI.setLikeItem(cid, account);
+    console.log(res);
+
+    if (res) setStarred(!!!starred);
+  };
+  const setUnlikeItem = async () => {
+    const res = await ItemAPI.setUnlikeItem(cid, account);
+    console.log(`res ${res}`);
+    if (res) setStarred(!!!starred);
+  };
+
   useEffect(() => {
     function getWindowSize() {
       const { innerWidth, innerHeight } = window;
@@ -45,30 +57,11 @@ function Detail() {
     };
   }, []);
 
-  const sample: IItem = {
-    cid: String(cid),
-    title: "Sample Title",
-    seller: "junsoh",
-    price: 10000,
-    grade: "gold",
-    description:
-      "Sample Description.\nIt's a sample description for testing.\nThis description should be placed in the center of the screen.\nSample Description.\nIt's a sample description for testing.\nThis description should be placed in the center of the screen.\nSample Description.\nIt's a sample description for testing.\nThis description should be placed in the center of the screen.\nSample Description.\nIt's a sample description for testing.\nThis description should be placed in the center of the screen.\n",
-    thumbnail_uri:
-      "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fk.kakaocdn.net%2Fdn%2F4REYA%2Fbtry5CqXoYc%2FDlrAQfulmwhDimruKLW5C1%2Fimg.png",
-    content_uri: [
-      "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fk.kakaocdn.net%2Fdn%2F4REYA%2Fbtry5CqXoYc%2FDlrAQfulmwhDimruKLW5C1%2Fimg.png",
-      "https://asia.olympus-imaging.com/content/000107507.jpg",
-      "https://media.istockphoto.com/vectors/sample-sign-sample-square-speech-bubble-sample-vector-id1161352480?k=20&m=1161352480&s=612x612&w=0&h=uVaVErtcluXjUNbOuvGF2_sSib9dZejwh4w8CwJPc48=",
-    ],
-    starred: 100,
-    view: 50,
-  };
-
   return (
     <>
       {modalOpen ? (
         <ImageModal onClose={() => setModalOpen(false)} show={modalOpen}>
-          <img src={sample.content_uri[imgIndex]} width={600} height={600} />
+          <img src={data.images[imgIndex]} width={600} height={600} />
           <button
             className="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
             data-carousel-prev
@@ -100,9 +93,7 @@ function Detail() {
             data-carousel-next
             onClick={() =>
               setImgIndex(
-                imgIndex + 1 == sample.content_uri.length
-                  ? imgIndex
-                  : imgIndex + 1
+                imgIndex + 1 == data.images.length ? imgIndex : imgIndex + 1
               )
             }
           >
@@ -129,107 +120,117 @@ function Detail() {
       ) : (
         <></>
       )}
-      <div className="bg-white dark:bg-blind_market w-full h-full min-h-screen items-center justify-center">
-        <div className="bg-white dark:bg-blind_market lg:w-1/2 w-full mx-auto">
-          <div className="bg-white dark:bg-blind_market w-full overflow-scroll flex gap-4 p-4">
-            {sample.content_uri.map((value, index) => (
-              <img
-                src={value}
-                key={index}
-                width={300}
-                height={300}
-                onClick={() => {
-                  setImgIndex(index);
-                  setModalOpen(true);
-                }}
-                className="border shadow-sm rounded-sm"
-              />
-            ))}
-            {sample.content_uri.map((value, index) => (
-              <img
-                src={value}
-                key={index}
-                width={300}
-                height={300}
-                onClick={() => {
-                  setImgIndex(index);
-                  setModalOpen(true);
-                }}
-              />
-            ))}
-          </div>
-          <div className="bg-white dark:bg-blind_market text-black dark:text-white text-xl p-4 font-semibold flex gap-4 ">
-            <p className="flex align-middle text-center items-center justify-center content-center">
-              <Image src={"/gold.png"} width={30} height={30} />
-              {sample.seller}
+      {data ? (
+        <div className="bg-white dark:bg-blind_market w-full h-full min-h-screen items-center justify-center">
+          <div className="bg-white dark:bg-blind_market lg:w-1/2 w-full mx-auto">
+            <div className="bg-white dark:bg-blind_market w-full overflow-scroll flex gap-4 p-4">
+              {data &&
+                data.images &&
+                data.images.map((value: any, index: number) => (
+                  <img
+                    src={value}
+                    key={index}
+                    width={300}
+                    height={300}
+                    onClick={() => {
+                      setImgIndex(index);
+                      setModalOpen(true);
+                    }}
+                    className="border shadow-sm rounded-sm"
+                  />
+                ))}
+            </div>
+            <h1 className="text-3xl font-bold text-start p-4">{data.title}</h1>
+            <div className="bg-white dark:bg-blind_market text-black dark:text-white text-xl p-4 font-semibold flex gap-4 ">
+              <p className="flex align-middle text-center items-center justify-center content-center">
+                <Image src={"/gold.png"} width={30} height={30} />
+                {data.seller}
+              </p>
+            </div>
+            <p className="text-4xl ml-0 mr-auto p-4 border-b">
+              {data.price} ￦
             </p>
-          </div>
-          <p className="text-4xl ml-0 mr-auto p-4 border-b">
-            {sample.price} ￦
-          </p>
-          <br />
-          <div className="bg-white dark:bg-blind_market w-full min-w-full gap-4 p-4 border-b">
-            <p className="text-black dark:text-white whitespace-pre-wrap font-semibold block">
-              {sample.description}
-            </p>
-          </div>
-          <br />
-          <div className="inline-flex rounded-md shadow-sm" role="group">
-            <button
-              type="button"
-              disabled
-              className="py-2 px-4 text-sm font-medium text-gray-900 bg-white rounded-l-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white inline-flex text-center items-center align-middle justify-center"
-            >
-              <svg
-                className="w-6 h-6"
-                fill="orange"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
+            <br />
+            <div className="bg-white dark:bg-blind_market w-full min-w-full gap-4 p-4 border-b">
+              <p className="text-black dark:text-white whitespace-pre-wrap font-semibold block">
+                {data.description}
+              </p>
+            </div>
+            <br />
+            <div className="inline-flex rounded-md shadow-sm" role="group">
+              <button
+                type="button"
+                className="py-2 px-4 text-sm font-medium text-gray-900 bg-white rounded-l-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white inline-flex text-center items-center align-middle justify-center"
+                onClick={
+                  data.starred ? () => setUnlikeItem() : () => setLikeItem()
+                }
               >
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-              </svg>
-              {sample.starred} Starred
-            </button>
-            <button
-              type="button"
-              className="py-2 px-4 text-sm font-medium text-gray-900 bg-white rounded-r-md border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white inline-flex text-center items-center align-middle justify-center gap-2"
-            >
-              <Image src={"/eye.png"} width={20} height={20} />
-              {sample.view} View
-            </button>
-          </div>
+                {data.starred ? (
+                  <svg
+                    className="w-6 h-6"
+                    fill="orange"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                  </svg>
+                ) : (
+                  <svg
+                    aria-hidden="true"
+                    className="w-6 h-6 text-gray-300 dark:text-gray-500"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <title>Fifth star</title>
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                  </svg>
+                )}
+                {data.starred} Starred
+              </button>
+              <button
+                type="button"
+                className="py-2 px-4 text-sm font-medium text-gray-900 bg-white rounded-r-md border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white inline-flex text-center items-center align-middle justify-center gap-2"
+              >
+                <Image src={"/eye.png"} width={20} height={20} />
+                {data.view} View
+              </button>
+            </div>
 
-          <div className="bg-white dark:bg-blind_market w-full min-w-full">
-            <div className="flex gap-4 bg-white dark:bg-blind_market">
-              <button
-                onClick={() => {
-                  setBackButtonEffect(true);
-                  router.back();
-                }}
-                onAnimationEnd={() => setBackButtonEffect(false)}
-                className={`${
-                  backButtonEffect && "animate-wiggle"
-                } bg-red-500 p-3 text-white rounded hover:bg-red-700 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center uppercase lg:my-10`}
-              >
-                Go Back
-              </button>
-              <button
-                onClick={() => {
-                  setBuyButtonEffect(true);
-                }}
-                onAnimationEnd={() => setBuyButtonEffect(false)}
-                className={`${
-                  buyButtonEffect && "animate-wiggle"
-                } bg-green-500 p-3 text-white rounded hover:bg-green-700 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center uppercase lg:my-10`}
-              >
-                Buy it!
-              </button>
+            <div className="bg-white dark:bg-blind_market w-full min-w-full">
+              <div className="flex gap-4 bg-white dark:bg-blind_market">
+                <button
+                  onClick={() => {
+                    setBackButtonEffect(true);
+                    router.back();
+                  }}
+                  onAnimationEnd={() => setBackButtonEffect(false)}
+                  className={`${
+                    backButtonEffect && "animate-wiggle"
+                  } bg-red-500 p-3 text-white rounded hover:bg-red-700 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center uppercase lg:my-10`}
+                >
+                  Go Back
+                </button>
+                <button
+                  onClick={() => {
+                    setBuyButtonEffect(true);
+                  }}
+                  onAnimationEnd={() => setBuyButtonEffect(false)}
+                  className={`${
+                    buyButtonEffect && "animate-wiggle"
+                  } bg-green-500 p-3 text-white rounded hover:bg-green-700 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center uppercase lg:my-10`}
+                >
+                  Buy it!
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <></>
+      )}
     </>
   );
-}
+});
 
 export default Detail;

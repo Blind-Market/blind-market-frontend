@@ -25,9 +25,14 @@ export const ThemeSwitch = () => {
   );
 };
 
-export const defaultInfinityScrollQuery = (category: number) => {
+export const defaultInfinityScrollQuery = (
+  category: string,
+  keyword: string
+) => {
+  console.log("HERE");
+
   const getItemPage = async ({ pageParam = 0 }) => {
-    const res = await ItemAPI.getMultipleItem(pageParam, category);
+    const res = await ItemAPI.getMultipleItem(pageParam, category, keyword);
     return {
       // 실제 데이터
       result: res ? res.data.result : null,

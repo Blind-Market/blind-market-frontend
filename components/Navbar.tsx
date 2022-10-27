@@ -1,27 +1,22 @@
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { BsFillSunFill, BsFillMoonFill } from "react-icons/bs";
+import React, { useEffect, useState } from "react";
 
-export const Navbar = () => {
+const Navbar = React.memo(function Navbar() {
   const [connectModalOpen, setConnectModalOpen] = useState(false);
-
   const [historyButtonEffect, setHistoryButtonEffect] = useState(false);
   const [createButtonEffect, setCreateButtonEffect] = useState(false);
   const [chatButtonEffect, setChatButtonEffect] = useState(false);
-  const [loginButtonEffect, setLoginButtonEffect] = useState(false);
   const [connectWalletButtonEffect, setConnectWalletButtonEffect] =
     useState(false);
 
-  const [mounted, setMounted] = useState(false);
   const [windowSize, setWindowSize] = useState<any>(0);
 
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     if (!theme) setTheme("dark");
-    setMounted(true);
     function getWindowSize() {
       const { innerWidth, innerHeight } = window;
       return innerWidth;
@@ -180,4 +175,6 @@ export const Navbar = () => {
       </nav>
     </>
   );
-};
+});
+
+export default Navbar;

@@ -1,7 +1,12 @@
 import ReactDOM from "react-dom";
 import React, { useEffect, useRef, useState } from "react";
 
-function ImageModal({ show, onClose, children, title }: any) {
+const ImageModal = React.memo(function ImageModal({
+  show,
+  onClose,
+  children,
+  title,
+}: any) {
   const [isBrowser, setIsBrowser] = useState(false);
   const [closeButtonEffect, setCloseButtonEffect] = useState(false);
   useEffect(() => {
@@ -43,6 +48,6 @@ function ImageModal({ show, onClose, children, title }: any) {
   } else {
     return null;
   }
-}
+});
 
 export default ImageModal;

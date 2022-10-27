@@ -1,16 +1,12 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import Body from "../components/Body";
+import React, { useState } from "react";
 import TransactionLog from "../components/TransactionLog";
 import { useAccount } from "../lib/web3";
-import transactionState from "../global";
 
-export default function History() {
+const History = React.memo(function History() {
   const [reloadButtonEffect, setReloadButtonEffect] = useState(false);
   const [deleteButtonEffect, setDeleteButtonEffect] = useState(false);
-
   const account = useAccount();
-  useEffect(() => {}, [account]);
 
   const router = useRouter();
 
@@ -144,4 +140,6 @@ export default function History() {
       <div className="w-full h-1/2 bg-red-300"></div>
     </div>
   );
-}
+});
+
+export default History;

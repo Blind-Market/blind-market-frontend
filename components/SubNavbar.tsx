@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import Image from "next/image";
 
-function SubNavbar() {
+const SubNavbar = React.memo(function SubNavbar() {
   const [windowSize, setWindowSize] = useState<any>(0);
   const [drawerStatus, setDrawerStatus] = useState(false);
   const [historyButtonEffect, setHistoryButtonEffect] = useState(false);
@@ -249,6 +249,6 @@ function SubNavbar() {
       </div>
     </nav>
   );
-}
+});
 
 export default SubNavbar;

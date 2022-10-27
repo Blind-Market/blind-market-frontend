@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import SubmitModal from "../components/SubmitModal";
 import { useAccount } from "../lib/web3";
 import { create } from "ipfs-http-client";
@@ -10,13 +10,12 @@ enum ModalType {
   SubmitModal,
 }
 
-export default function Write() {
+const Write = React.memo(function Write() {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState(0);
   const [content, setContent] = useState("");
   const [imgFiles, setImgFiles] = useState<any[]>([]);
   const [category, setCategory] = useState("");
-  const [windowSize, setWindowSize] = useState<any>(0);
 
   const [submitButtonEffect, setSubmitButtonEffect] = useState(false);
   const [cancelButtonEffect, setCancelButtonEffect] = useState(false);
@@ -30,36 +29,7 @@ export default function Write() {
   const router = useRouter();
   var account = useAccount();
 
-  async function connectWallet(): Promise<void> {
-    //to get around type checking
-    (window as any).ethereum
-      .request({
-        method: "eth_requestAccounts",
-      })
-      .then((accounts: string[]) => {
-        account = accounts[0];
-      })
-      .catch((error: any) => {
-        console.log(error);
-      });
-  }
-
-  useEffect(() => {
-    connectWallet();
-    function getWindowSize() {
-      const { innerWidth, innerHeight } = window;
-      return innerWidth;
-    }
-    function handleWindowResize() {
-      setWindowSize(getWindowSize());
-    }
-    window.addEventListener("resize", handleWindowResize);
-    handleWindowResize();
-
-    return () => {
-      window.removeEventListener("resize", handleWindowResize);
-    };
-  }, [account]);
+  console.log(account);
 
   const titleHandler = (e: any) => {
     if (e.target.value.length < 20) {
@@ -150,8 +120,6 @@ export default function Write() {
     };
 
     const metadataCid = await client.add(JSON.stringify(metadata));
-
-    console.log(metadataCid);
 
     // Contract 호출 !
   };
@@ -397,4 +365,6 @@ export default function Write() {
       </div>
     </>
   );
-}
+});
+
+export default Write;

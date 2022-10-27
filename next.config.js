@@ -1,24 +1,33 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  swcMinify: true,
+  reactStrictMode: false,
   crossOrigin: "anonymous",
-  // async rewrites() {
-  // 	return [
-  // 		{
-  // 			source: "/ping",
-  // 			destination: `${process.env.NEXT_PUBLIC_API_URL}/ping`,
-  // 		},
-  // 		{
-  // 			source: "/private_key",
-  // 			destination: `${process.env.NEXT_PUBLIC_API_URL}/private_key`,
-  // 		},
-  // 		{
-  // 			source: "/items",
-  // 			destination: `${process.env.NEXT_PUBLIC_API_URL}/items`,
-  // 		},
-  // 	];
-  // },
+  async rewrites() {
+    return [
+      {
+        source: "/private_key",
+        destination: `${process.env.NEXT_API_ENDPOINT}/private`,
+      },
+      {
+        source: "/items",
+        destination: `${process.env.NEXT_API_ENDPOINT}/item/list`,
+      },
+      {
+        source: "/item/:path*",
+        destination: `${process.env.NEXT_API_ENDPOINT}/item/:path*`,
+      },
+      {
+        source: "/user",
+        destination: `${process.env.NEXT_API_ENDPOINT}/user`,
+      },
+    ];
+  },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback.fs = false;
+    }
+    return config;
+  },
 };
 
 module.exports = nextConfig;
