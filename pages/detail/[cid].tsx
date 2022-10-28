@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import ImageModal from "../../components/ImageModal";
 import ItemAPI from "../../lib/item";
 import { useAccount } from "../../lib/web3";
@@ -10,9 +10,66 @@ const Detail = React.memo(function Detail() {
   const router = useRouter();
   const { cid } = router.query;
   const account = useAccount();
-  const { data } = useQuery(`/item/${cid}`, () =>
-    ItemAPI.getSingleItem(cid, account)
+  const queryClient = useQueryClient();
+
+  const setLikeItem = async () => {
+    const res = await ItemAPI.setLikeItem(cid, account);
+    console.log(res);
+
+    if (res) setStarred(!!!starred);
+  };
+  const setUnlikeItem = async () => {
+    const res = await ItemAPI.setUnlikeItem(cid, account);
+    console.log(`res ${res}`);
+    if (res) setStarred(!!!starred);
+  };
+
+  const setLikeMutation = useMutation(setLikeItem, {
+    onMutate: (variable) => {
+      console.log("onMutate", variable);
+      // variable : {loginId: 'xxx', password; 'xxx'}
+    },
+    onError: (error, variable, context) => {
+      // error
+    },
+    onSuccess: (data, variables, context) => {
+      console.log("success", data, variables, context);
+      queryClient.invalidateQueries(`/item/${cid}`);
+    },
+    onSettled: () => {
+      console.log("end");
+    },
+  });
+  const setUnLikeMutation = useMutation(setUnlikeItem, {
+    onMutate: (variable) => {
+      console.log("onMutate", variable);
+      // variable : {loginId: 'xxx', password; 'xxx'}
+    },
+    onError: (error, variable, context) => {
+      // error
+    },
+    onSuccess: (data, variables, context) => {
+      console.log("success", data, variables, context);
+      queryClient.invalidateQueries(`/item/${cid}`);
+    },
+    onSettled: () => {
+      console.log("end");
+    },
+  });
+
+  const { isLoading, isError, data, error } = useQuery(
+    `/item/${cid}`,
+    () => ItemAPI.getSingleItem(cid, account),
+    {
+      refetchOnWindowFocus: false,
+      onSuccess: (data) => console.log(data),
+      onError: (e) => console.error(e),
+    }
   );
+
+  const handleStarred = () => {
+    data.starred ? setLikeMutation.mutate() : setUnLikeMutation.mutate();
+  };
 
   const [windowSize, setWindowSize] = useState<any>(0);
   const [starred, setStarred] = useState<any>(data?.starred);
@@ -26,18 +83,6 @@ const Detail = React.memo(function Detail() {
       setModalOpen(false);
     }
   }, []);
-
-  const setLikeItem = async () => {
-    const res = await ItemAPI.setLikeItem(cid, account);
-    console.log(res);
-
-    if (res) setStarred(!!!starred);
-  };
-  const setUnlikeItem = async () => {
-    const res = await ItemAPI.setUnlikeItem(cid, account);
-    console.log(`res ${res}`);
-    if (res) setStarred(!!!starred);
-  };
 
   useEffect(() => {
     function getWindowSize() {
@@ -124,8 +169,7 @@ const Detail = React.memo(function Detail() {
         <div className="bg-white dark:bg-blind_market w-full h-full min-h-screen items-center justify-center">
           <div className="bg-white dark:bg-blind_market lg:w-1/2 w-full mx-auto">
             <div className="bg-white dark:bg-blind_market w-full overflow-scroll flex gap-4 p-4">
-              {data &&
-                data.images &&
+              {data.images &&
                 data.images.map((value: any, index: number) => (
                   <img
                     src={value}
@@ -161,9 +205,7 @@ const Detail = React.memo(function Detail() {
               <button
                 type="button"
                 className="py-2 px-4 text-sm font-medium text-gray-900 bg-white rounded-l-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white inline-flex text-center items-center align-middle justify-center"
-                onClick={
-                  data.starred ? () => setUnlikeItem() : () => setLikeItem()
-                }
+                onClick={handleStarred}
               >
                 {data.starred ? (
                   <svg

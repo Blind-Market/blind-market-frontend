@@ -23,8 +23,6 @@ export const CATEGORY = [
 const queryClient = new QueryClient();
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
-  const { theme, setTheme } = useTheme();
-
   return (
     <>
       <Head>

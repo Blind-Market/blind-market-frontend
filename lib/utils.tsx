@@ -29,8 +29,6 @@ export const defaultInfinityScrollQuery = (
   category: string,
   keyword: string
 ) => {
-  console.log("HERE");
-
   const getItemPage = async ({ pageParam = 0 }) => {
     const res = await ItemAPI.getMultipleItem(pageParam, category, keyword);
     return {

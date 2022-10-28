@@ -29,8 +29,6 @@ const Write = React.memo(function Write() {
   const router = useRouter();
   var account = useAccount();
 
-  console.log(account);
-
   const titleHandler = (e: any) => {
     if (e.target.value.length < 20) {
       setTitle(e.target.value);
