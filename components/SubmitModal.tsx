@@ -1,4 +1,10 @@
-function SubmitModal({ onSubmit, onClose, children }: any) {
+import React from "react";
+
+const SubmitModal = React.memo(function SubmitModal({
+  onSubmit,
+  onClose,
+  children,
+}: any) {
   return (
     <>
       <div
@@ -70,6 +76,6 @@ function SubmitModal({ onSubmit, onClose, children }: any) {
       </div>
     </>
   );
-}
+});
 
 export default SubmitModal;

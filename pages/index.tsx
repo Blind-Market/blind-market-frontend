@@ -1,28 +1,27 @@
 import type { NextPage } from "next";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import shallow from "zustand/shallow";
 import Body from "../components/Body";
+import StoreAPI from "../lib/store";
 import { useAccount } from "../lib/web3";
 
 const Home: NextPage = () => {
   var account = useAccount();
   const [connectWalletButtonEffect, setConnectWalletButtonEffect] =
     useState(false);
-  const [windowSize, setWindowSize] = useState<any>(0);
+  const { innerWidth, innerHeight, setWindowSize } = StoreAPI.useWindowSize(
+    (state) => ({
+      innerWidth: state.innerWidth,
+      innerHeight: state.innerHeight,
+      setWindowSize: state.setWindowSize,
+    }),
+    shallow
+  );
 
   useEffect(() => {
-    function getWindowSize() {
-      const { innerWidth, innerHeight } = window;
-      return innerWidth;
-    }
-    function handleWindowResize() {
-      setWindowSize(getWindowSize());
-    }
-    window.addEventListener("resize", handleWindowResize);
-    handleWindowResize();
-    return () => {
-      window.removeEventListener("resize", handleWindowResize);
-    };
+    const { innerWidth, innerHeight } = window;
+    setWindowSize(innerWidth, innerHeight);
   }, []);
 
   async function connectWallet(): Promise<void> {
@@ -61,7 +60,7 @@ const Home: NextPage = () => {
             }}
             onAnimationEnd={() => setConnectWalletButtonEffect(false)}
           >
-            {windowSize > 760 ? (
+            {innerWidth > 760 ? (
               <svg
                 aria-hidden="true"
                 className="mr-2 w-4 h-4"

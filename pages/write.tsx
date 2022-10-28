@@ -1,9 +1,8 @@
 import { useRouter } from "next/router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import SubmitModal from "../components/SubmitModal";
 import { useAccount } from "../lib/web3";
 import { create } from "ipfs-http-client";
-import { CATEGORY } from "./_app";
 
 enum ModalType {
   CancelModal,
@@ -76,6 +75,26 @@ const Write = React.memo(function Write() {
     }
     router.push("/");
   };
+
+  const CATEGORY = useMemo(
+    () => ({
+      CATEGORY: [
+        "all",
+        "digital",
+        "lifestyle",
+        "interior",
+        "kitchen",
+        "beauty",
+        "sports",
+        "fashion",
+        "game",
+        "book",
+        "pet",
+        "other",
+      ],
+    }),
+    []
+  );
 
   const ipfsUpload = async () => {
     const projectId = `${process.env.NEXT_PUBLIC_PROJECT_ID}`;
@@ -200,7 +219,7 @@ const Write = React.memo(function Write() {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 >
                   <option>Choose a category</option>
-                  {CATEGORY.map((value, index) => (
+                  {CATEGORY.CATEGORY.map((value, index) => (
                     <option value={value} key={index}>
                       {value}
                     </option>

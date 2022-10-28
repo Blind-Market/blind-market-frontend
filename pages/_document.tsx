@@ -42,4 +42,4 @@ class MainDocument extends Document {
   }
 }
 
-export default MainDocument;
+export default React.memo(MainDocument);

@@ -1,28 +1,28 @@
 import React, { useEffect, useState } from "react";
+import shallow from "zustand/shallow";
 import Body from "../components/Body";
 import OpponentCard from "../components/OpponentCard";
+import StoreAPI from "../lib/store";
 import { useAccount } from "../lib/web3";
 
 const Chat = React.memo(function Chat() {
   const account = useAccount();
-  const [windowSize, setWindowSize] = useState<any>(0);
+
   const [drawerStatus, setDrawerStatus] = useState(false);
   const nickname = "woojlee";
 
-  useEffect(() => {
-    function getWindowSize() {
-      const { innerWidth, innerHeight } = window;
-      return innerWidth;
-    }
-    function handleWindowResize() {
-      setWindowSize(getWindowSize());
-    }
-    window.addEventListener("resize", handleWindowResize);
-    handleWindowResize();
+  const { innerWidth, innerHeight, setWindowSize } = StoreAPI.useWindowSize(
+    (state) => ({
+      innerWidth: state.innerWidth,
+      innerHeight: state.innerHeight,
+      setWindowSize: state.setWindowSize,
+    }),
+    shallow
+  );
 
-    return () => {
-      window.removeEventListener("resize", handleWindowResize);
-    };
+  useEffect(() => {
+    const { innerWidth, innerHeight } = window;
+    setWindowSize(innerWidth, innerHeight);
   }, []);
 
   const opponent1: IOpponent = {

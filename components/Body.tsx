@@ -1,17 +1,24 @@
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
-import React, { useCallback, useEffect, useState } from "react";
+import shallow from "zustand/shallow";
+
+import StoreAPI from "../lib/store";
 import { defaultInfinityScrollQuery } from "../lib/utils";
-import { CATEGORY } from "../pages/_app";
 import CategoryButton from "./CategoryButton";
 import Product from "./Product";
 
 const Body = React.memo(function Body() {
-  const [windowSize, setWindowSize] = useState<any>(0);
+  const { theme } = useTheme();
   const [searchInput, setSearchInput] = useState("");
   const { getItems, getNextPage, getItemIsSuccess, getNextPageIsPossible } =
     defaultInfinityScrollQuery("all", "title");
-  const { theme } = useTheme();
+  const [windowSize, setWindowSize] = useState<any>(0);
+
+  const { category } = StoreAPI.useCategory(
+    (state) => ({ category: state.category }),
+    shallow
+  );
 
   useEffect(() => {
     function getWindowSize() {
@@ -37,6 +44,35 @@ const Body = React.memo(function Body() {
   };
 
   const submitSearchInput = () => {};
+
+  console.log("RERENDER");
+
+  const Items = useMemo(
+    () => ({
+      Items: getItems?.pages[0].result,
+    }),
+    []
+  );
+
+  const CATEGORY = useMemo(
+    () => ({
+      CATEGORY: [
+        "all",
+        "digital",
+        "lifestyle",
+        "interior",
+        "kitchen",
+        "beauty",
+        "sports",
+        "fashion",
+        "game",
+        "book",
+        "pet",
+        "other",
+      ],
+    }),
+    []
+  );
 
   return (
     <div className="w-full relative min-h-screen z-0 bg-white dark:bg-blind_market">
@@ -98,14 +134,14 @@ const Body = React.memo(function Body() {
       </div>
       <div className="lg:mx-20 lg:my-0 my-4 mx-4 align-middle justify-center items-center text-center">
         {windowSize > 768 &&
-          CATEGORY.map((name, idx) => {
+          CATEGORY.CATEGORY.map((name, idx) => {
             return <CategoryButton category={name} key={idx} />;
           })}
       </div>
       <div className="grid p-4 2xl:grid-cols-6 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 xs:grid-cols-1 gap-2 lg:gap-4 items-center justify-center align-middle">
-        {getItems &&
-          Array.isArray(getItems.pages[0].result) &&
-          getItems.pages[0].result.map((item: any, idx: number) => (
+        {Items &&
+          Array.isArray(Items) &&
+          Items.map((item: any, idx: number) => (
             <Product product={item} key={idx} />
           ))}
       </div>
@@ -113,4 +149,4 @@ const Body = React.memo(function Body() {
   );
 });
 
-export default Body;
+export default React.memo(Body);

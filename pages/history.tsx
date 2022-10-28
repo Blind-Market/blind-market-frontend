@@ -7,7 +7,6 @@ const History = React.memo(function History() {
   const [reloadButtonEffect, setReloadButtonEffect] = useState(false);
   const [deleteButtonEffect, setDeleteButtonEffect] = useState(false);
   const account = useAccount();
-
   const router = useRouter();
 
   const data: ITransactionLog = {
@@ -142,4 +141,4 @@ const History = React.memo(function History() {
   );
 });
 
-export default History;
+export default React.memo(History);

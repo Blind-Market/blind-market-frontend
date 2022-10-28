@@ -1,34 +1,41 @@
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import shallow from "zustand/shallow";
+import StoreAPI from "../lib/store";
+import NavButton from "./NavButton";
 
 const Navbar = React.memo(function Navbar() {
   const [connectModalOpen, setConnectModalOpen] = useState(false);
-  const [historyButtonEffect, setHistoryButtonEffect] = useState(false);
-  const [createButtonEffect, setCreateButtonEffect] = useState(false);
-  const [chatButtonEffect, setChatButtonEffect] = useState(false);
   const [connectWalletButtonEffect, setConnectWalletButtonEffect] =
     useState(false);
 
-  const [windowSize, setWindowSize] = useState<any>(0);
+  const BtnArray = useMemo(
+    () => ({
+      btnArr: [
+        ["create entry", "/write"],
+        ["history", "/history"],
+        ["chats", "/chat"],
+      ],
+    }),
+    []
+  );
 
   const { theme, setTheme } = useTheme();
 
+  const { innerWidth, innerHeight, setWindowSize } = StoreAPI.useWindowSize(
+    (state) => ({
+      innerWidth: state.innerWidth,
+      innerHeight: state.innerHeight,
+      setWindowSize: state.setWindowSize,
+    }),
+    shallow
+  );
+
   useEffect(() => {
-    if (!theme) setTheme("dark");
-    function getWindowSize() {
-      const { innerWidth, innerHeight } = window;
-      return innerWidth;
-    }
-    function handleWindowResize() {
-      setWindowSize(getWindowSize());
-    }
-    window.addEventListener("resize", handleWindowResize);
-    handleWindowResize();
-    return () => {
-      window.removeEventListener("resize", handleWindowResize);
-    };
+    const { innerWidth, innerHeight } = window;
+    setWindowSize(innerWidth, innerHeight);
   }, []);
 
   return (
@@ -98,45 +105,9 @@ const Navbar = React.memo(function Navbar() {
         </label>
         <div className={`w-full lg:inline-flex lg:flex-grow lg:w-auto`}>
           <div className="lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto w-full lg:items-center items-start gap-2 flex flex-col lg:h-auto">
-            <Link href="/write">
-              <button
-                className={`${
-                  createButtonEffect && "animate-wiggle"
-                } bg-blue-600 p-3 text-white rounded hover:bg-blue-800 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center`}
-                onClick={() => {
-                  setCreateButtonEffect(true);
-                }}
-                onAnimationEnd={() => setCreateButtonEffect(false)}
-              >
-                Create Entry
-              </button>
-            </Link>
-            <Link href="/history">
-              <button
-                className={`${
-                  historyButtonEffect && "animate-wiggle"
-                } bg-blue-600 p-3 text-white rounded hover:bg-blue-800 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center`}
-                onClick={() => {
-                  setHistoryButtonEffect(true);
-                }}
-                onAnimationEnd={() => setHistoryButtonEffect(false)}
-              >
-                History
-              </button>
-            </Link>
-            <Link href="/chat">
-              <button
-                className={`${
-                  chatButtonEffect && "animate-wiggle"
-                } bg-blue-600 p-3 text-white rounded hover:bg-blue-800 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center`}
-                onClick={() => {
-                  setChatButtonEffect(true);
-                }}
-                onAnimationEnd={() => setChatButtonEffect(false)}
-              >
-                Chats
-              </button>
-            </Link>
+            {BtnArray.btnArr.map((value: any, index: number) => (
+              <NavButton btnHref={value[1]} btnText={value[0]} key={index} />
+            ))}
             <button
               type="button"
               data-modal-toggle="crypto-modal"
@@ -149,7 +120,7 @@ const Navbar = React.memo(function Navbar() {
               }}
               onAnimationEnd={() => setConnectWalletButtonEffect(false)}
             >
-              {windowSize > 1280 ? (
+              {innerWidth > 1280 ? (
                 <svg
                   aria-hidden="true"
                   className="mr-2 w-4 h-4"
@@ -168,7 +139,7 @@ const Navbar = React.memo(function Navbar() {
               ) : (
                 <></>
               )}
-              Connect wallet
+              CONNECT WALLET
             </button>
           </div>
         </div>

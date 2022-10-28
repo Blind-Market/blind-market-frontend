@@ -1,5 +1,5 @@
 import assert from "assert";
-import { useState } from "react";
+import React, { useState } from "react";
 
 export const transactionState = {
   INVALID: -1,
@@ -24,7 +24,9 @@ const buttonTypeHandler = (status: any): string => {
   }
 };
 
-function TransactionLog({ transaction }: any) {
+const TransactionLog = React.memo(function TransactionLog({
+  transaction,
+}: any) {
   const [checked, setChecked] = useState(false);
   const [buttonEffect, setButtonEffect] = useState(false);
   const [buttonText] = useState(buttonTypeHandler(transaction.status));
@@ -108,6 +110,6 @@ function TransactionLog({ transaction }: any) {
       </th>
     </tr>
   );
-}
+});
 
-export default TransactionLog;
+export default React.memo(TransactionLog);

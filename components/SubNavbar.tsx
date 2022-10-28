@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import Image from "next/image";
+import shallow from "zustand/shallow";
+import StoreAPI from "../lib/store";
 
 const SubNavbar = React.memo(function SubNavbar() {
-  const [windowSize, setWindowSize] = useState<any>(0);
   const [drawerStatus, setDrawerStatus] = useState(false);
   const [historyButtonEffect, setHistoryButtonEffect] = useState(false);
   const [createButtonEffect, setCreateButtonEffect] = useState(false);
@@ -15,20 +16,18 @@ const SubNavbar = React.memo(function SubNavbar() {
 
   const { theme, setTheme } = useTheme();
 
+  const { innerWidth, innerHeight, setWindowSize } = StoreAPI.useWindowSize(
+    (state) => ({
+      innerWidth: state.innerWidth,
+      innerHeight: state.innerHeight,
+      setWindowSize: state.setWindowSize,
+    }),
+    shallow
+  );
+
   useEffect(() => {
-    if (!theme) setTheme("dark");
-    function getWindowSize() {
-      const { innerWidth, innerHeight } = window;
-      return innerWidth;
-    }
-    function handleWindowResize() {
-      setWindowSize(getWindowSize());
-    }
-    window.addEventListener("resize", handleWindowResize);
-    handleWindowResize();
-    return () => {
-      window.removeEventListener("resize", handleWindowResize);
-    };
+    const { innerWidth, innerHeight } = window;
+    setWindowSize(innerWidth, innerHeight);
   }, []);
   return (
     <nav className="bg-black">
@@ -132,7 +131,7 @@ const SubNavbar = React.memo(function SubNavbar() {
               }}
               onAnimationEnd={() => setConnectWalletButtonEffect(false)}
             >
-              {windowSize > 1280 ? (
+              {innerWidth > 1280 ? (
                 <svg
                   aria-hidden="true"
                   className="mr-2 w-4 h-4"
@@ -174,7 +173,7 @@ const SubNavbar = React.memo(function SubNavbar() {
                 height={30}
               />
             )}
-            {windowSize > 500 ? (
+            {innerWidth > 500 ? (
               <span className="text-xl text-white font-bold  tracking-wide ">
                 Blind Market
               </span>
@@ -251,4 +250,4 @@ const SubNavbar = React.memo(function SubNavbar() {
   );
 });
 
-export default SubNavbar;
+export default React.memo(SubNavbar);

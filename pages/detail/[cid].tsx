@@ -2,8 +2,10 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import shallow from "zustand/shallow";
 import ImageModal from "../../components/ImageModal";
 import ItemAPI from "../../lib/item";
+import StoreAPI from "../../lib/store";
 import { useAccount } from "../../lib/web3";
 
 const Detail = React.memo(function Detail() {
@@ -71,35 +73,24 @@ const Detail = React.memo(function Detail() {
     data.starred ? setLikeMutation.mutate() : setUnLikeMutation.mutate();
   };
 
-  const [windowSize, setWindowSize] = useState<any>(0);
   const [starred, setStarred] = useState<any>(data?.starred);
   const [modalOpen, setModalOpen] = useState(false);
   const [imgIndex, setImgIndex] = useState<number>(0);
   const [buyButtonEffect, setBuyButtonEffect] = useState(false);
   const [backButtonEffect, setBackButtonEffect] = useState(false);
 
-  const keydownFunction = useCallback((event: any) => {
-    if (event.key === "Escape") {
-      setModalOpen(false);
-    }
-  }, []);
+  const { innerWidth, innerHeight, setWindowSize } = StoreAPI.useWindowSize(
+    (state) => ({
+      innerWidth: state.innerWidth,
+      innerHeight: state.innerHeight,
+      setWindowSize: state.setWindowSize,
+    }),
+    shallow
+  );
 
   useEffect(() => {
-    function getWindowSize() {
-      const { innerWidth, innerHeight } = window;
-      return innerWidth;
-    }
-    function handleWindowResize() {
-      setWindowSize(getWindowSize());
-    }
-
-    window.addEventListener("resize", handleWindowResize);
-    document.addEventListener("keydown", keydownFunction);
-    handleWindowResize();
-
-    return () => {
-      window.removeEventListener("resize", handleWindowResize);
-    };
+    const { innerWidth, innerHeight } = window;
+    setWindowSize(innerWidth, innerHeight);
   }, []);
 
   return (

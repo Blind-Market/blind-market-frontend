@@ -35,4 +35,21 @@ export declare global {
     starred: number;
     view: number;
   }
+
+  interface ICategoryStore {
+    category: string;
+    setCategory: (select: string) => void;
+  }
+
+  interface IUserInfo {
+    Account: string;
+    Nickname: string;
+    setUserInfo: (id: string, nickname: string) => void;
+  }
+
+  interface IWindowSize {
+    innerWidth: number;
+    innerHeight: number;
+    setWindowSize: (innerWidth: number, innerHeight: number) => void;
+  }
 }

@@ -4,25 +4,24 @@ import Head from "next/head";
 import { ThemeProvider, useTheme } from "next-themes";
 import { QueryClient, QueryClientProvider } from "react-query";
 import Layout from "../components/Layout";
+import React, { useMemo } from "react";
 
-export const CATEGORY = [
-  "all",
-  "digital",
-  "lifestyle",
-  "interior",
-  "kitchen",
-  "beauty",
-  "sports",
-  "fashion",
-  "game",
-  "book",
-  "pet",
-  "other",
-];
-
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 0,
+      suspense: true,
+    },
+  },
+});
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
+  const props = useMemo(
+    () => ({
+      props: pageProps,
+    }),
+    []
+  );
   return (
     <>
       <Head>
@@ -33,7 +32,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       <ThemeProvider attribute="class">
         <QueryClientProvider client={queryClient}>
           <Layout>
-            <Component {...pageProps} />
+            <Component {...props} />
           </Layout>
         </QueryClientProvider>
       </ThemeProvider>
