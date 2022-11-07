@@ -38,7 +38,7 @@ import Web3 from "web3";
 //   return { web3, contract };
 // };
 
-export const useAccount = () => {
+const useAccount = () => {
   const [account, setAccount] = useState("");
 
   const getAccount = async () => {
@@ -61,3 +61,9 @@ export const useAccount = () => {
 
   return account;
 };
+
+const Web3API = {
+  useAccount,
+};
+
+export default Web3API;
