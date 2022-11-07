@@ -1,6 +1,10 @@
 import Link from "next/link";
 import React from "react";
 
+function IsEqual(prevProps: any, nextProps: any) {
+  return prevProps == nextProps ? true : false;
+}
+
 const Product = React.memo(function Product({ product }: any) {
   return (
     <Link
@@ -37,6 +41,6 @@ const Product = React.memo(function Product({ product }: any) {
       </div>
     </Link>
   );
-});
+}, IsEqual);
 
 export default Product;

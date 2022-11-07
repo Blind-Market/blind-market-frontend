@@ -1,15 +1,22 @@
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import shallow from "zustand/shallow";
+import AuthAPI from "../lib/auth";
 import StoreAPI from "../lib/store";
+import { useAccount } from "../lib/web3";
 import NavButton from "./NavButton";
 
-const Navbar = React.memo(function Navbar() {
+function IsEqual(prevProps: any, nextProps: any) {
+  return prevProps == nextProps ? true : false;
+}
+
+const Navbar = React.memo(function Navbar(account: any) {
   const [connectModalOpen, setConnectModalOpen] = useState(false);
   const [connectWalletButtonEffect, setConnectWalletButtonEffect] =
     useState(false);
+  console.log(`account: ${account}`);
 
   const BtnArray = useMemo(
     () => ({
@@ -106,7 +113,7 @@ const Navbar = React.memo(function Navbar() {
         <div className={`w-full lg:inline-flex lg:flex-grow lg:w-auto`}>
           <div className="lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto w-full lg:items-center items-start gap-2 flex flex-col lg:h-auto">
             {BtnArray.btnArr.map((value: any, index: number) => (
-              <NavButton btnHref={value[1]} btnText={value[0]} key={index} />
+              <NavButton btnText={value[0]} btnHref={value[1]} key={index} />
             ))}
             <button
               type="button"
@@ -146,6 +153,6 @@ const Navbar = React.memo(function Navbar() {
       </nav>
     </>
   );
-});
+}, IsEqual);
 
 export default Navbar;
