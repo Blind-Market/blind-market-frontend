@@ -41,7 +41,7 @@ const Home: NextPage = () => {
   return (
     <div className="bg-white dark:bg-blind_market flex h-full flex-col justify-center items-center">
       {account ? (
-        <Body account={account} />
+        <Body />
       ) : (
         <div className="bg-white dark:bg-blind_market w-full justify-center items-center align-middle flex-col flex">
           <h1 className="lg:text-4xl text-xl my-5 text-black dark:text-white font-bold">

@@ -1,11 +1,7 @@
 import Link from "next/link";
 import React, { useState } from "react";
 
-function IsEqual(prevProps: any, nextProps: any) {
-  return prevProps == nextProps ? true : false;
-}
-
-const NavButton = React.memo(function NavButton({ btnText, btnHref }: any) {
+const NavButton = ({ btnText, btnHref }: any) => {
   const [buttonEffect, setButtonEffect] = useState(false);
   return (
     <Link href={btnHref}>
@@ -22,6 +18,6 @@ const NavButton = React.memo(function NavButton({ btnText, btnHref }: any) {
       </button>
     </Link>
   );
-}, IsEqual);
+};
 
 export default NavButton;

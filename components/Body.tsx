@@ -8,11 +8,7 @@ import { defaultInfinityScrollQuery } from "../lib/utils";
 import CategoryButton from "./CategoryButton";
 import Product from "./Product";
 
-function IsEqual(prevProps: any, nextProps: any) {
-  return prevProps == nextProps ? true : false;
-}
-
-const Body = React.memo(function Body(account: any) {
+const Body = React.memo(function Body() {
   const { theme } = useTheme();
   const [searchInput, setSearchInput] = useState("");
   const { getItems, getNextPage, getItemIsSuccess, getNextPageIsPossible } =
@@ -48,6 +44,8 @@ const Body = React.memo(function Body(account: any) {
   };
 
   const submitSearchInput = () => {};
+
+  console.log("RERENDER");
 
   const Items = useMemo(
     () => ({
@@ -136,7 +134,6 @@ const Body = React.memo(function Body(account: any) {
       </div>
       <div className="lg:mx-20 lg:my-0 my-4 mx-4 align-middle justify-center items-center text-center">
         {windowSize > 768 &&
-          account &&
           CATEGORY.CATEGORY.map((name, idx) => {
             return <CategoryButton category={name} key={idx} />;
           })}
@@ -150,6 +147,6 @@ const Body = React.memo(function Body(account: any) {
       </div>
     </div>
   );
-}, IsEqual);
+});
 
-export default Body;
+export default React.memo(Body);

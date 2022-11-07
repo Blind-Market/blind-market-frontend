@@ -1,9 +1,5 @@
 import React from "react";
 
-function IsEqual(prevProps: any, nextProps: any) {
-  return prevProps === nextProps;
-}
-
 const CategoryButton = React.memo(function CategoryButton({ category }: any) {
   const colorHandler = () => {
     switch (category) {
@@ -46,6 +42,6 @@ const CategoryButton = React.memo(function CategoryButton({ category }: any) {
       </button>
     </>
   );
-}, IsEqual);
+});
 
 export default CategoryButton;
