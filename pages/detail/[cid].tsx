@@ -20,6 +20,7 @@ const Detail = React.memo(function Detail() {
 
     if (res) setStarred(!!!starred);
   };
+
   const setUnlikeItem = async () => {
     const res = await ItemAPI.setUnlikeItem(cid, account);
     console.log(`res ${res}`);
@@ -42,6 +43,7 @@ const Detail = React.memo(function Detail() {
       console.log("end");
     },
   });
+
   const setUnLikeMutation = useMutation(setUnlikeItem, {
     onMutate: (variable) => {
       console.log("onMutate", variable);

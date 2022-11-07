@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import SubmitModal from "../components/SubmitModal";
 import { useAccount } from "../lib/web3";
 import { create } from "ipfs-http-client";
+import { useForm } from "react-hook-form";
 
 enum ModalType {
   CancelModal,
@@ -23,7 +24,7 @@ const Write = React.memo(function Write() {
   const [modalChildren, setModalChildren] = useState("");
   const [modalType, setModalType] = useState<ModalType>();
 
-  const imgRef = useRef() as React.MutableRefObject<HTMLInputElement>;
+  const imgRef = useRef() as React.MutableRefObject<HTMLInputElement>;  // 뭐하는 얘지??
 
   const router = useRouter();
   var account = useAccount();
@@ -54,7 +55,7 @@ const Write = React.memo(function Write() {
     }
 
     if (!title || !content || !imgFiles) {
-      alert("Necessart part is not available");
+      alert("Necessary part is not available");
       return;
     }
     setSubmitButtonEffect(true);
@@ -139,21 +140,55 @@ const Write = React.memo(function Write() {
     const metadataCid = await client.add(JSON.stringify(metadata));
 
     // Contract 호출 !
+    /*
+      contract 호출 함수들
+      1. mintNFT
+      2. Pending 전환 함수
+    */
   };
+
+  // PHOTO
+  interface UploadPhoto {
+    photo: FileList;
+  }
+  const { register, watch } = useForm<UploadPhoto>();
+  const photo = watch("photo");
+  const [photoPreview, setPhotoPreview] = useState<any[]>([])
+
+  useEffect(() => {
+    if (photo && photo.length > 0) {
+      let arr = [];
+      for (let i = 0; i < photo.length; i++) {
+        const file = photo[i];
+        arr.push(URL.createObjectURL(file));
+      }
+      console.log(arr);
+      setPhotoPreview(arr);
+    }
+  }, [photo]);
+
+  const inputImages = () => {
+    let arr = [];
+    for (let i = 0; i < photoPreview.length; i++) {
+      arr.push(<div><img src={photoPreview[i]} className="w-full text-gray-600 h-80 rounded-md" /></div>)
+    }
+    return arr;
+  }
+
   return (
     <>
       {modalPopUp ? (
         <div className="mx-auto my-auto">
           <SubmitModal
-            onClose={() => setModalPopUp(false)}
             onSubmit={
               modalType == ModalType.CancelModal
                 ? () => router.push("/")
                 : () => ipfsUpload()
             }
-            children={modalChildren}
-            type={modalType}
-          />
+            onClose={() => setModalPopUp(false)}
+          >
+            {modalChildren}
+          </SubmitModal>
         </div>
       ) : (
         <></>
@@ -166,59 +201,88 @@ const Write = React.memo(function Write() {
             </h1>
           </div>
           <div className="bg-white dark:bg-blind_market mx-10 lg:mx-72 shadow-md p-4">
-            <div className="mr-4 my-4">
-              <form>
-                <div className="relative z-0 mb-6 group">
-                  <input
-                    type="title"
-                    className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                    placeholder="Title is necessary"
-                    required
-                    value={title}
-                    onChange={titleHandler}
+            <label
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 min-w-max my-4"
+              htmlFor="multiple_files"
+            >
+              Upload multiple files
+            </label>
+            {photoPreview.length ? (
+              <label>
+                {inputImages().map((image) => { return image; })}
+                <input
+                  {...register("photo")}
+                  accept="image/*"
+                  className="hidden"
+                  id="multiple_files"
+                  type="file"
+                  // onChange={(e) => imgFilesHandler(e)}
+                  // ref={imgRef} // 어떤 친구인지??
+                  multiple
+                />
+              </label>
+            ) : (
+              <label className="w-full cursor-pointer text-gray-600 hover:border-gray-800 hover:text-gray-800 flex items-center justify-center border-2 border-dashed border-gray-300 h-80 rounded-md">
+                <svg
+                  className="h-12 w-12"
+                  stroke="currentColor"
+                  fill="none"
+                  viewBox="0 0 48 48"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
-                  <label
-                    htmlFor="title"
-                    className="block bg-white dark:bg-blind_market peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  ></label>
-                </div>
-              </form>
-            </div>
-          </div>
-          <div className="bg-white dark:bg-blind_market mx-10 lg:mx-72 shadow-md p-4">
-            <textarea
-              id="editor"
-              rows={20}
-              className="block w-full text-lg text-gray-800 bg-white dark:bg-blind_market dark:text-white dark:placeholder-gray-400 border-1 border-b-2 my-2 focus:ring-blue-500 focus:border-blue-500 rounded-lg"
-              placeholder="Please explain what you want to sell! Products described in detail are more likely to be sold than those not."
-              onChange={contentHandler}
-              value={content}
-              required
-            ></textarea>
-            <div className="mr-4 my-4">
-              <p
-                id="helper-text-explanation"
-                className="text-sm text-gray-500 dark:text-gray-400"
-              >
-                Description about product is maximum 500 letters.
-              </p>
-            </div>
+                </svg>
+                <input
+                  {...register("photo")}
+                  accept="image/*"
+                  className="hidden"
+                  id="multiple_files"
+                  type="file"
+                  // onChange={(e) => imgFilesHandler(e)}
+                  // ref={imgRef}
+                  multiple
+                />
+              </label>
+            )}
           </div>
           <div className="bg-white dark:bg-blind_market mx-10 lg:mx-72 shadow-md p-4 my-4 grid xl:grid-cols-2 grid-cols-1">
             <div className="grid grid-rows-3">
+              <div className="mr-4 my-4">
+                <form>
+                  <div className="relative z-0 mb-6 group">
+                    <input
+                      type="title"
+                      className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                      placeholder="Please input the Title"
+                      required
+                      value={title}
+                      onChange={titleHandler}
+                    />
+                    <label
+                      htmlFor="title"
+                      className="block bg-white dark:bg-blind_market peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    ></label>
+                  </div>
+                </form>
+              </div>
               <div>
                 <label
                   htmlFor="categories"
                   className="flex mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 min-w-max"
                 >
-                  Select an option
+                  Select an Category
                 </label>
                 <select
                   id="countries"
                   onChange={(e) => setCategory(e.target.value)}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 >
-                  <option>Choose a category</option>
+                  <option>Categories</option>
                   {CATEGORY.CATEGORY.map((value, index) => (
                     <option value={value} key={index}>
                       {value}
@@ -262,8 +326,8 @@ const Write = React.memo(function Write() {
                   className="block transition ease-in-out text-sm text-gray-800 bg-white dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 border-1 cursor-pointer focus:outline-none "
                   id="multiple_files"
                   type="file"
-                  onChange={(e) => imgFilesHandler(e)}
-                  ref={imgRef}
+                  // onChange={(e) => imgFilesHandler(e)}
+                  ref={imgRef}  // 뭐하는 얘지??
                   multiple
                 />
               </div>
@@ -352,8 +416,27 @@ const Write = React.memo(function Write() {
               </div>
             </div>
           </div>
-          <div className="flex items-center border-b p-4">
-            <div className="flex items-center gap-4 lg:mx-72 my-4 mx-10">
+          <div className="bg-white dark:bg-blind_market mx-10 lg:mx-72 shadow-md p-4">
+            <textarea
+              id="editor"
+              rows={20}
+              className="block w-full text-lg text-gray-800 bg-white dark:bg-blind_market dark:text-white dark:placeholder-gray-400 border-1 border-b-2 my-2 focus:ring-blue-500 focus:border-blue-500 rounded-lg"
+              placeholder="Please explain what you want to sell! Products described in detail are more likely to be sold than those not."
+              onChange={contentHandler}
+              value={content}
+              required
+            ></textarea>
+            <div className="mr-4 my-4">
+              <p
+                id="helper-text-explanation"
+                className="text-sm text-gray-500 dark:text-gray-400"
+              >
+                Description about product is maximum 500 letters.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center border-b p-4 mx-10 lg:mx-72">
+            <div className="flex items-center gap-4 my-4 ml-auto">
               <button
                 onClick={() => {
                   cancelHanlder();
@@ -361,7 +444,7 @@ const Write = React.memo(function Write() {
                 onAnimationEnd={() => setCancelButtonEffect(false)}
                 className={`${
                   cancelButtonEffect && "animate-wiggle"
-                } bg-red-800 p-3 text-white rounded hover:bg-blue-700 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center`}
+                } bg-red-800 p-3 text-white rounded hover:bg-gray-700 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center`}
               >
                 Cancel
               </button>
@@ -372,7 +455,7 @@ const Write = React.memo(function Write() {
                 onAnimationEnd={() => setSubmitButtonEffect(false)}
                 className={`${
                   submitButtonEffect && "animate-wiggle"
-                } bg-blue-700 p-3 text-white rounded hover:bg-blue-700 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center`}
+                } bg-blue-700 p-3 text-white rounded hover:bg-gray-700 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center`}
               >
                 Publish
               </button>

@@ -6,6 +6,7 @@ import Body from "../components/Body";
 import StoreAPI from "../lib/store";
 import { useAccount } from "../lib/web3";
 
+// MetaMask 연결 창
 const Home: NextPage = () => {
   var account = useAccount();
   const [connectWalletButtonEffect, setConnectWalletButtonEffect] =
