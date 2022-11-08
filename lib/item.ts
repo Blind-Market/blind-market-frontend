@@ -2,11 +2,11 @@ import axios from "axios";
 
 /**
  * API call function for get items list
- * @param page 
+ * @param {number} page 
  * 			Offset for pagination
- * @param category 
+ * @param {string} category 
  * 			Item category (lower case)
- * @param keyword 
+ * @param {string} keyword 
  * 			Keyword for filtering
  * 
  * @typedef {Object} images
@@ -116,7 +116,7 @@ const getSingleItem = (cid: any, account: any) =>
  * 			The wallet address of the user who creat the item
  * 
  * 
- * @typedef {Object} ResultObject
+ * @typedef {Object} ReturnObject
  * @property {string} cid - Item cid
  * @property {string} category - Item category (lower case)
  * @property {string} title - Item title
@@ -125,7 +125,7 @@ const getSingleItem = (cid: any, account: any) =>
  * @property {number} price - Item price
  * @property {string} - The wallet address of the user who creat the item
  * 
- * @returns {ResultObject} - ResultObject object
+ * @returns {ReturnObject} - ReturnObject object
  */
 const createItem = async (
 	cid: string,
@@ -199,10 +199,10 @@ const updateItem = async (
 
 /**
  * API call function for deleting item
- * @param address 
+ * @param {string} address 
  * 			The wallet address of the user who delete the item.
  * 			and this wallet address user is owner of item.	
- * @param cid 
+ * @param {string} cid 
  * 			Item cid
  * 
  * 
@@ -226,10 +226,7 @@ const deleteItem = async (address: string, cid: string) => {
 	.catch((err) => console.log(err));
 };
 
-// 어떤 의도로 생성한 함수인지??
-const searchItemsByCondition = async () => {};
-
-// api 문서에 없는 api 호출
+// starred api 호출 함수
 const setLikeItem = (cid: any, account: any) =>
 	axios
 		.post(`/item/${cid}/starred`, {
@@ -238,7 +235,7 @@ const setLikeItem = (cid: any, account: any) =>
 		.then((res) => res.data.success)
 		.catch((err) => console.log(err));
 
-// api 문서에 없는 api 호출
+// unstarred api 호출 함수
 const setUnlikeItem = (cid: any, account: any) =>
 	axios
 		.delete(`/item/${cid}/unstarred`, {
@@ -250,7 +247,6 @@ const setUnlikeItem = (cid: any, account: any) =>
 const ItemAPI = {
 	getSingleItem,
 	getMultipleItem,
-	searchItemsByCondition,
 	createItem,
 	updateItem,
 	deleteItem,

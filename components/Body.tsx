@@ -4,7 +4,7 @@ import Image from "next/image";
 import shallow from "zustand/shallow";
 
 import StoreAPI from "../lib/store";
-import { defaultInfinityScrollQuery } from "../lib/utils";
+import { useDefaultInfinityScrollQuery } from "../lib/utils";
 import CategoryButton from "./CategoryButton";
 import Product from "./Product";
 
@@ -16,7 +16,7 @@ const Body = React.memo(function Body(account: any) {
   const { theme } = useTheme();
   const [searchInput, setSearchInput] = useState("");
   const { getItems, getNextPage, getItemIsSuccess, getNextPageIsPossible } =
-    defaultInfinityScrollQuery("all", "title");
+    useDefaultInfinityScrollQuery("all", "title");
   const [windowSize, setWindowSize] = useState<any>(0);
 
   const { category } = StoreAPI.useCategory(

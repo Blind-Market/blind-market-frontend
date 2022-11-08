@@ -2,7 +2,7 @@ import axios from "axios";
 
 /**
  * API call function for getting a user's private key
- * @param address
+ * @param {string} address
  *          User wallet address to get the private key
  * 
  * @typedef {Object} Result
@@ -26,9 +26,9 @@ const getPrivateKey = async (address: string) => {
 // signature가 body에 있는게 괜찮은지??
 /**
  * API call function for double-checking user authorization
- * @param address 
+ * @param {string} address 
  *          User wallet address to double check
- * @param signature 
+ * @param {string} signature 
  *          User signature to double check
  * 
  * @typedef {Object} ReturnObject
@@ -47,7 +47,7 @@ const doubleCheckUser = async (address: string, signature: string) => {
   .catch((err) => console.log(err));
 };
 
-// 이건 어떤 목적으로 만드셨는지 궁금쓰
+// 유저 주소 + 서명 암호화해서 인증 호출 함수
 const login = async () => {};
 
 const AuthAPI = {

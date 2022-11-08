@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import shallow from "zustand/shallow";
 import Body from "../components/Body";
 import StoreAPI from "../lib/store";
-import { useAccount } from "../lib/web3";
+import Web3API from "../lib/web3";
 
 // MetaMask 연결 창
 const Home: NextPage = () => {
-  var account = useAccount();
+  var account = Web3API.useAccount();
   const [connectWalletButtonEffect, setConnectWalletButtonEffect] =
     useState(false);
   const { innerWidth, innerHeight, setWindowSize } = StoreAPI.useWindowSize(

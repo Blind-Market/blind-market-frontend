@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useAccount } from "../lib/web3";
+import Web3API from "../lib/web3";
 import Navbar from "./Navbar";
 import SubNavbar from "./SubNavbar";
 
@@ -10,7 +10,7 @@ function IsEqual(prevProps: any, nextProps: any) {
 const Layout = React.memo(function Layout({ children, Menu }: any) {
   const [isOpen, setIsOpen] = useState(true);
   const [windowSize, setWindowSize] = useState<any>(0);
-  const account = useAccount();
+  const account = Web3API.useAccount();
 
   useEffect(() => {
     function getWindowSize() {

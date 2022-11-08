@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import SubmitModal from "../components/SubmitModal";
-import { useAccount } from "../lib/web3";
+import Web3API from "../lib/web3";
 import { create } from "ipfs-http-client";
 import { useForm } from "react-hook-form";
 
@@ -27,7 +27,7 @@ const Write = React.memo(function Write() {
   const imgRef = useRef() as React.MutableRefObject<HTMLInputElement>;  // 뭐하는 얘지??
 
   const router = useRouter();
-  var account = useAccount();
+  var account = Web3API.useAccount();
 
   const titleHandler = (e: any) => {
     if (e.target.value.length < 20) {
@@ -217,7 +217,6 @@ const Write = React.memo(function Write() {
                   id="multiple_files"
                   type="file"
                   // onChange={(e) => imgFilesHandler(e)}
-                  // ref={imgRef} // 어떤 친구인지??
                   multiple
                 />
               </label>
@@ -244,7 +243,6 @@ const Write = React.memo(function Write() {
                   id="multiple_files"
                   type="file"
                   // onChange={(e) => imgFilesHandler(e)}
-                  // ref={imgRef}
                   multiple
                 />
               </label>
@@ -315,7 +313,7 @@ const Write = React.memo(function Write() {
                   </p>
                 </div>
               </div>
-              <div>
+              {/* <div>
                 <label
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 min-w-max my-4"
                   htmlFor="multiple_files"
@@ -327,10 +325,9 @@ const Write = React.memo(function Write() {
                   id="multiple_files"
                   type="file"
                   // onChange={(e) => imgFilesHandler(e)}
-                  ref={imgRef}  // 뭐하는 얘지??
                   multiple
                 />
-              </div>
+              </div> */}
             </div>
             <div className="grid grid-rows-3 visible">
               <div

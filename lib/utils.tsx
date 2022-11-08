@@ -25,7 +25,8 @@ export const ThemeSwitch = () => {
   );
 };
 
-export const defaultInfinityScrollQuery = (
+// 무한 스크롤 생성 함수
+export const useDefaultInfinityScrollQuery = (
   category: string,
   keyword: string
 ) => {
