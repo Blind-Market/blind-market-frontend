@@ -3,16 +3,16 @@ import { useTheme } from "next-themes";
 import Link from "next/link";
 import Image from "next/image";
 import shallow from "zustand/shallow";
+
 import StoreAPI from "../lib/store";
 
 const SubNavbar = React.memo(function SubNavbar() {
   const [drawerStatus, setDrawerStatus] = useState(false);
-  const [historyButtonEffect, setHistoryButtonEffect] = useState(false);
+  const [userButtonEffect, setUserButtonEffect] = useState(false);
   const [createButtonEffect, setCreateButtonEffect] = useState(false);
   const [chatButtonEffect, setChatButtonEffect] = useState(false);
   const [loginButtonEffect, setLoginButtonEffect] = useState(false);
-  const [connectWalletButtonEffect, setConnectWalletButtonEffect] =
-    useState(false);
+  const [connectWalletButtonEffect, setConnectWalletButtonEffect] = useState(false);
 
   const { theme, setTheme } = useTheme();
 
@@ -94,17 +94,17 @@ const SubNavbar = React.memo(function SubNavbar() {
                 Create Entry
               </button>
             </Link>
-            <Link href="/history">
+            <Link href="/user">
               <button
                 className={`${
-                  historyButtonEffect && "animate-wiggle"
+                  userButtonEffect && "animate-wiggle"
                 } bg-blue-600 p-3 text-white rounded hover:bg-blue-800 hover:shadow-xl w-full px-3 py-2 font-bold items-center justify-center`}
                 onClick={() => {
-                  setHistoryButtonEffect(true);
+                  setUserButtonEffect(true);
                 }}
-                onAnimationEnd={() => setHistoryButtonEffect(false)}
+                onAnimationEnd={() => setUserButtonEffect(false)}
               >
-                History
+                User
               </button>
             </Link>
             <Link href="/chat">
