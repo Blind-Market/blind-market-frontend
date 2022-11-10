@@ -25,6 +25,7 @@ const useAccount = () => {
       }
     } catch (err) {
       console.log(err);
+      setAccount("");
     }
   };
   useEffect(() => {

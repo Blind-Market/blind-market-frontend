@@ -8,12 +8,15 @@ import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
 
 import NavButton from "./NavButton";
 import StoreAPI from "../lib/store";
+import Web3API from "../lib/web3"
 
 function IsEqual(prevProps: any, nextProps: any) {
   return prevProps == nextProps ? true : false;
 }
 
-const Navbar = React.memo(function Navbar(account: any) {
+const Navbar = React.memo(function Navbar() {
+  var account = Web3API.useAccount();
+
   const [connectModalOpen, setConnectModalOpen] = useState(false);
   const [connectWalletButtonEffect, setConnectWalletButtonEffect] = useState(false);
 
@@ -44,11 +47,9 @@ const Navbar = React.memo(function Navbar(account: any) {
     setWindowSize(innerWidth, innerHeight);
   }, []);
 
-  console.log("Navbar account: " + account);
-
   return (
     <>
-      <nav className="flex items-center flex-wrap bg-black dark:bg-black p-3 border dark:border-slate-800 border-white">
+      <nav className="flex items-center flex-wrap bg-black p-3 dark:border-slate-800 border-x-0 border-t-0 border-b-2 border-white">
         {connectModalOpen ? (
           <div className="w-full h-full bg-black"></div>
         ) : (
@@ -113,9 +114,14 @@ const Navbar = React.memo(function Navbar(account: any) {
         </label>
         <div className={`w-full lg:inline-flex lg:flex-grow lg:w-auto mr-10`}>
           <div className="lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto w-full lg:items-center items-start gap-2 flex flex-col lg:h-auto">
-            {BtnArray.btnArr.map((value: any, index: number) => (
-              <NavButton btnText={value[0]} btnHref={value[1]} key={index} />
-            ))}
+            {BtnArray.btnArr.map((value: any, index: number) => {
+              if (account) {
+                return <NavButton btnText={value[0]} btnHref={value[1]} key={index} />
+              }
+              else if (value[1] !== "/user") {
+                return <NavButton btnText={value[0]} btnHref={value[1]} key={index} />
+              }
+            })}
             {account ? (
               <></>
             ): (
@@ -124,7 +130,7 @@ const Navbar = React.memo(function Navbar(account: any) {
                 data-modal-toggle="crypto-modal"
                 className={`${
                   connectWalletButtonEffect && "animate-wiggle"
-                } text-white rounded hover:bg-blue-800 hover:shadow-xl lg:inline-flex lg:w-auto w-full h-full font-bold items-center justify-center align-middle cusor-progress`}
+                } bg-gray-500 text-white rounded hover:bg-blue-800 hover:shadow-xl lg:inline-flex lg:w-auto w-full h-full font-bold items-center justify-center px-3 align-middle cusor-progress`}
                 onClick={() => {
                   setConnectWalletButtonEffect(true);
                   setConnectModalOpen(true);
