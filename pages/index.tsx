@@ -10,7 +10,6 @@ import Web3API from "../lib/web3";
 import UserAPI from '../lib/user';
 import AuthAPI from '../lib/auth';
 
-// MetaMask 연결 창
 const Home: NextPage = () => {
   const router = useRouter();
 
@@ -78,6 +77,7 @@ const Home: NextPage = () => {
                 type="text"
                 value={userNickname}
                 onChange={validateUserNickname}
+                required
               />
               <button
                 type="submit"

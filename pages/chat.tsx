@@ -4,10 +4,10 @@ import Body from "../components/Body";
 import Chatroom from "../components/Chatroom";
 import OpponentCard from "../components/OpponentCard";
 import StoreAPI from "../lib/store";
-import { useAccount } from "../lib/web3";
+import Web3API from "../lib/web3";
 
 const Chat = React.memo(function Chat() {
-  const account = useAccount();
+  const account = Web3API.useAccount();
   const [drawerStatus, setDrawerStatus] = useState(false);
   const { opponentNickname } = StoreAPI.useChatRoom(
     (state) => ({
