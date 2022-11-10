@@ -6,12 +6,12 @@ import shallow from "zustand/shallow";
 import ImageModal from "../../components/ImageModal";
 import ItemAPI from "../../lib/item";
 import StoreAPI from "../../lib/store";
-import { useAccount } from "../../lib/web3";
+import Web3API from "../../lib/web3";
 
 const Detail = React.memo(function Detail() {
   const router = useRouter();
   const { cid } = router.query;
-  const account = useAccount();
+  const account = Web3API.useAccount();
   const queryClient = useQueryClient();
 
   const setLikeItem = async () => {

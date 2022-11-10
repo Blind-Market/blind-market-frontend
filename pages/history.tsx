@@ -1,12 +1,12 @@
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import TransactionLog from "../components/TransactionLog";
-import { useAccount } from "../lib/web3";
+import Web3API from "../lib/web3";
 
 const History = React.memo(function History() {
   const [reloadButtonEffect, setReloadButtonEffect] = useState(false);
   const [deleteButtonEffect, setDeleteButtonEffect] = useState(false);
-  const account = useAccount();
+  const account = Web3API.useAccount();
   const router = useRouter();
 
   const data: ITransactionLog = {

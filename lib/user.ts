@@ -59,7 +59,6 @@ const getUserInfo = async (admin_key: string, nickname: string) => {
 	.catch((err) => console.log(err));
 };
 
-
 /**
  * API call function for updating user nickname
  * @param {string} address

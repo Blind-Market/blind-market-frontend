@@ -48,7 +48,14 @@ const doubleCheckUser = async (address: string, signature: string) => {
 };
 
 // 유저 주소 + 서명 암호화해서 인증 호출 함수
-const login = async () => {};
+const login = async (address: string) => {
+  const userPrivateKey = await getPrivateKey(address);
+  // response error check
+  // sign with secret message + private key
+  // send signature with api request
+  // response error check
+  // confirm login
+};
 
 const AuthAPI = {
   getPrivateKey,
