@@ -1,16 +1,24 @@
 import type { NextPage } from "next";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { useRouter } from 'next/router';
+
 import shallow from "zustand/shallow";
 import Body from "../components/Body";
 import StoreAPI from "../lib/store";
 import Web3API from "../lib/web3";
+import UserAPI from '../lib/user';
+import AuthAPI from '../lib/auth';
 
 // MetaMask 연결 창
 const Home: NextPage = () => {
+  const router = useRouter();
+
   var account = Web3API.useAccount();
+
   const [connectWalletButtonEffect, setConnectWalletButtonEffect] =
     useState(false);
+  
   const { innerWidth, innerHeight, setWindowSize } = StoreAPI.useWindowSize(
     (state) => ({
       innerWidth: state.innerWidth,
@@ -39,10 +47,52 @@ const Home: NextPage = () => {
       });
   }
 
+  const [userNickname, setUserNickname] = useState("");
+  const validateUserNickname = (e: any) => {
+    const nickname = e.target.value;
+    // validate nickname
+
+    // if everything is ok
+    setUserNickname(nickname);
+  };
+
+  const [checkNickname, setCheckNickname] = useState(false);
+
   return (
     <div className="bg-white dark:bg-blind_market flex h-full flex-col justify-center items-center">
       {account ? (
-        <Body account={account} />
+        // <Body account={account} />
+        checkNickname ? (
+          <Body account={account} />
+        ) : (
+          <div className="bg-white dark:bg-blind_market w-full justify-center items-center align-middle flex-col flex">
+            <h1 className="lg:text-4xl text-xl mt-5 text-black dark:text-white font-bold">
+              Welcome Your First Visit!
+            </h1>
+            <p className="lg:text-l text-m mt-3 mb-5 text-black dark:text-white font-bold">
+              Please enter the your nickname to use
+            </p>
+            <div className='flex justify-center items-center mt-10'>
+              <input 
+                className="text-black font-bold rounded-l-md my-5 h-10"
+                type="text"
+                value={userNickname}
+                onChange={validateUserNickname}
+              />
+              <button
+                type="submit"
+                data-modal-toggle="crypto-modal"
+                className={`${
+                  connectWalletButtonEffect && "animate-wiggle"
+                } bg-blue-600 p-3 text-white rounded-r-md hover:bg-blue-800 hover:shadow-xl lg:inline-flex lg:w-auto w-fit h-10 px-3 py-2 font-bold items-center justify-center align-middle my-5`}
+                onAnimationEnd={() => setConnectWalletButtonEffect(false)}
+                onClick={() => setCheckNickname(true)}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        )
       ) : (
         <div className="bg-white dark:bg-blind_market w-full justify-center items-center align-middle flex-col flex">
           <h1 className="lg:text-4xl text-xl my-5 text-black dark:text-white font-bold">
