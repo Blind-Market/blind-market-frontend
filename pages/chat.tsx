@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import shallow from "zustand/shallow";
-import Body from "../components/Body";
+
 import Chatroom from "../components/Chatroom";
 import OpponentCard from "../components/OpponentCard";
+
 import StoreAPI from "../lib/store";
 import Web3API from "../lib/web3";
 

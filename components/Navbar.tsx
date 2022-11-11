@@ -114,23 +114,15 @@ const Navbar = React.memo(function Navbar() {
         </label>
         <div className={`w-full lg:inline-flex lg:flex-grow lg:w-auto mr-10`}>
           <div className="lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto w-full lg:items-center items-start gap-2 flex flex-col lg:h-auto">
-            {BtnArray.btnArr.map((value: any, index: number) => {
-              if (account) {
-                return <NavButton btnText={value[0]} btnHref={value[1]} key={index} />
-              }
-              else if (value[1] !== "/user") {
-                return <NavButton btnText={value[0]} btnHref={value[1]} key={index} />
-              }
-            })}
             {account ? (
-              <></>
-            ): (
+              BtnArray.btnArr.map((value: any, index: number) => (<NavButton btnText={value[0]} btnHref={value[1]} key={index} />))
+            ) : (
               <button
                 type="button"
                 data-modal-toggle="crypto-modal"
                 className={`${
                   connectWalletButtonEffect && "animate-wiggle"
-                } bg-gray-500 text-white rounded hover:bg-blue-800 hover:shadow-xl lg:inline-flex lg:w-auto w-full h-full font-bold items-center justify-center px-3 align-middle cusor-progress`}
+                } bg-blue-800 text-white rounded hover:bg-blue-800 hover:shadow-xl lg:inline-flex lg:w-auto w-full h-full font-bold items-center justify-center px-3 py-3 align-middle cusor-progress`}
                 onClick={() => {
                   setConnectWalletButtonEffect(true);
                   setConnectModalOpen(true);
