@@ -5,7 +5,6 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import shallow from "zustand/shallow";
 import AuthAPI from "../lib/auth";
 import StoreAPI from "../lib/store";
-import { useAccount } from "../lib/web3";
 import NavButton from "./NavButton";
 
 function IsEqual(prevProps: any, nextProps: any) {
@@ -16,7 +15,6 @@ const Navbar = React.memo(function Navbar(account: any) {
   const [connectModalOpen, setConnectModalOpen] = useState(false);
   const [connectWalletButtonEffect, setConnectWalletButtonEffect] =
     useState(false);
-  console.log(`account: ${account}`);
 
   const BtnArray = useMemo(
     () => ({
