@@ -6,14 +6,17 @@ import shallow from "zustand/shallow";
 import CategoryButton from "./CategoryButton";
 import Product from "./Product";
 
-import StoreAPI from "../lib/store";
 import { useDefaultInfinityScrollQuery } from "../lib/utils";
+import StoreAPI from "../lib/store";
+import Web3API from "../lib/web3";
 
 function IsEqual(prevProps: any, nextProps: any) {
   return prevProps == nextProps ? true : false;
 }
 
 const Body = React.memo(function Body(account: any) {
+  const { web3, contract } = Web3API.useWeb3()
+
   const { theme } = useTheme();
   const [searchInput, setSearchInput] = useState("");
   const { getItems, getNextPage, getItemIsSuccess, getNextPageIsPossible } = useDefaultInfinityScrollQuery("all", "title");
@@ -77,15 +80,58 @@ const Body = React.memo(function Body(account: any) {
   );
 
   const [userNickname, setUserNickname] = useState("");
-  const validateUserNickname = (e: any) => {
-    const nickname = e.target.value;
-    // validate nickname
 
-    // if everything is ok
-    setUserNickname(nickname);
+  const handleValidation = () => {
+    // check that nickname is satisfied the rule
+    const nicknameCheck = userNickname.match(/^[A-Za-z0-9]{2,10}$/);
+
+    if (userNickname.length < 2) {
+      alert("The length of the nickname must be greater than 2");
+      setUserNickname("");
+      return false;
+    } else if (userNickname.length > 10) {
+      alert("The length of the nickname must be less than 10");
+      setUserNickname("");
+      return false;
+    } else if (checkNickname) {
+      alert("The nickname must have uppercase, lowercase alphabets and numbers");
+      setUserNickname("");
+      return false;
+    }
+
+    // check nickname reduplication
+
+    return true;
+  }
+
+  const createNewUser = () => {
+    // create new user
+    contract?.methods
+      .setUserInfo(userNickname)
+      .send({ from: account }, (err: any, res: any) => {
+        if (err) {
+          console.log(err);
+          alert("Somthing error is occured! Please try again.");
+        } else {
+          console.log("Hash of the transactions: " + res);
+          setCheckNickname(true);
+        }
+      });
   };
 
   const [checkNickname, setCheckNickname] = useState(false);
+  
+  useEffect(() => {
+    contract?.methods.showUserInfo().call((err: any, res: any) => {
+      if (err)
+        console.log(err);
+      console.log(res);
+    });
+    // const userInfo: IUserData = contract?.methods.showUserInfo().call();
+
+    // if (userInfo.grade != 0)
+    //   setCheckNickname(true);
+  }, []);
 
   return (
     <div className="w-full relative min-h-screen z-0 bg-white dark:bg-blind_market">
@@ -175,12 +221,15 @@ const Body = React.memo(function Body(account: any) {
               className="text-black font-bold rounded-l-md my-5 h-10"
               type="text"
               value={userNickname}
-              onChange={validateUserNickname}
+              onChange={(e) => setUserNickname(e.target.value)}
               required
             />
             <button
               className='bg-blue-600 p-3 text-white rounded-r-md hover:bg-blue-800 hover:shadow-xl lg:inline-flex lg:w-auto w-fit h-10 px-3 py-2 font-bold items-center justify-center align-middle my-5'
-              onClick={() => setCheckNickname(true)}
+              onClick={() => {
+                if (handleValidation())
+                  createNewUser();
+              }}
             >
               Confirm
             </button>

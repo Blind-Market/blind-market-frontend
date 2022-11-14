@@ -60,10 +60,11 @@ const Write = React.memo(function Write() {
       throw new Error("Please install metamask!");
     }
 
-    if (!title || !content || !imgFiles) {
+    if (!title || !content || !imgFiles || price <= 0) {
       alert("Necessary part is not available");
       return;
     }
+
     setSubmitButtonEffect(true);
     setModalType(ModalType.SubmitModal);
     setModalChildren("Are you sure you want to submit?");
@@ -230,7 +231,7 @@ const Write = React.memo(function Write() {
                   className="hidden"
                   id="multiple_files"
                   type="file"
-                  // onChange={(e) => imgFilesHandler(e)}
+                  onChange={(e) => imgFilesHandler(e)}
                   multiple
                 />
               </label>
@@ -256,7 +257,7 @@ const Write = React.memo(function Write() {
                   className="hidden"
                   id="multiple_files"
                   type="file"
-                  // onChange={(e) => imgFilesHandler(e)}
+                  onChange={(e) => imgFilesHandler(e)}
                   multiple
                 />
               </label>
@@ -327,21 +328,6 @@ const Write = React.memo(function Write() {
                   </p>
                 </div>
               </div>
-              {/* <div>
-                <label
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 min-w-max my-4"
-                  htmlFor="multiple_files"
-                >
-                  Upload multiple files
-                </label>
-                <input
-                  className="block transition ease-in-out text-sm text-gray-800 bg-white dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 border-1 cursor-pointer focus:outline-none "
-                  id="multiple_files"
-                  type="file"
-                  // onChange={(e) => imgFilesHandler(e)}
-                  multiple
-                />
-              </div> */}
             </div>
             <div className="grid grid-rows-3 visible">
               <div

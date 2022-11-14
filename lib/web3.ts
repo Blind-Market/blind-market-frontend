@@ -11,7 +11,7 @@ import { BlindMarketABI } from '../contracts/abi/BLIND';
  * @returns {string} - the currently connected account wallet address
  */
 const useAccount = () => {
-  const [account, setAccount] = useState("");
+  const [account, setAccount] = useState<string>("");
 
   const getAccount = async () => {
     try {
@@ -28,6 +28,7 @@ const useAccount = () => {
       setAccount("");
     }
   };
+
   useEffect(() => {
     getAccount();
   }, []);

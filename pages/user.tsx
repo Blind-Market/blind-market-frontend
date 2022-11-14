@@ -1,12 +1,13 @@
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserPen } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
 
-import TransactionLog from "../components/TransactionLog";
+import { transactionState, TransactionLog } from "../components/TransactionLog";
 import SubmitModal from '../components/SubmitModal';
 
 import Web3API from "../lib/web3";
+import StoreAPI from '../lib/store';
+import { request } from 'https';
 
 enum ModalType {
   CancelModal,
@@ -14,10 +15,58 @@ enum ModalType {
 }
 
 const User = React.memo(function User() {
+  const account = Web3API.useAccount();
+  const { web3, contract } = Web3API.useWeb3();
+  const router = useRouter();
+
   const [reloadButtonEffect, setReloadButtonEffect] = useState(false);
   const [deleteButtonEffect, setDeleteButtonEffect] = useState(false);
-  const account = Web3API.useAccount();
-  const router = useRouter();
+
+  const userInfo: IUserData = contract?.methods.showUserInfo().call((err: any, res: any) => {
+    if (err) {
+      console.log(err);
+      alert("Somthing error is occured! Please try again.");
+    }
+  });
+
+  const transactionLogs = () => {
+    var metadataList: string[] = [];
+    var transactionLogs: ITransactionLog[] = [];
+
+    const requestList: IRequest[] = contract?.methods.showTradeInfo().call((err: any, res: any) => {
+      if (err) {
+        console.log(err);
+        alert("Somthing error is occured! Please try again.");
+      }
+    });
+
+    requestList.map((value: IRequest, index: number) => {
+      metadataList.push(contract?.methods.showTokenURI(value.token_id).call((err: any, res: any) => {
+        if (err) {
+          console.log(err);
+          alert("Somthing error is occured! Please try again.");
+        }
+      }));
+    });
+
+    requestList.map((value: IRequest, index: number) => {
+      axios.get(metadataList[index])
+        .then((res) => {
+          transactionLogs.push({
+            product_name: res.data.price,
+            opponent: value.buyer,
+            date: res.data.created_at,
+            price: res.data.price,
+            type: value.phase,
+            status: value.phase,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          alert("Somthing error is occured! Please try again.");
+        });
+    });
+  }
 
   const data: ITransactionLog = {
     product_name: "Example TransactionLog",
@@ -60,33 +109,8 @@ const User = React.memo(function User() {
     status: 3,
   };
 
-  // const [modalPopUp, setModalPopUp] = useState(false);
-  // const [submitButtonEffect, setSubmitButtonEffect] = useState(false);
-
-  // const submitHandler = async () => {
-  //   if (!window.ethereum) {
-  //     throw new Error("Please install metamask!");
-  //   }
-
-  //   setSubmitButtonEffect(true);
-  //   setModalPopUp(true);
-  // }
-
   return (
     <>
-      {/* {modalPopUp ? (
-        <div className="mx-auto my-auto bg-gray-900 bg-opacity-20">
-          <SubmitModal
-            onSubmit={() => setModalPopUp(false)}
-            onClose={() => setModalPopUp(false)}
-          >
-            {<p>Enter the your new nickname</p>}
-            {<input className="text-black font-bold rounded-l-md my-5 h-10" type="text" placeholder="New Nickname" />}
-          </SubmitModal>
-        </div>
-      ) : (
-        <></>
-      )} */}
       <div className="bg-white dark:bg-blind_market flex h-full flex-col justify-center items-center w-full">
         <div className="min-h-screen h-full w-full dark:bg-blind_market bg-white">
           <div className="overflow-x-auto relative lg:mx-60 lg:my-8 mx-10 my-4 h-fit">
@@ -95,22 +119,15 @@ const User = React.memo(function User() {
               <div className='mb-10'>
                 <div className='flex items-center mr-auto'>
                   <h1 className='lg:text-xl text-m mr-20'>User Nickname:</h1>
-                  <h1 className='lg:text-xl text-m text-bold mr-5'>Bolee</h1>
-                  {/* <button
-                    onClick={() => {
-                      submitHandler();
-                    }}
-                    onAnimationEnd={() => setSubmitButtonEffect(false)}
-                    className={`${
-                      submitButtonEffect && "animate-wiggle"
-                    } bg-blue-700 p-3 text-white rounded hover:bg-gray-700 hover:shadow-xl inline-flex w-auto pl-2 pr-1 py-1 font-bold items-center justify-center mr-auto`}
-                  >
-                    <FontAwesomeIcon icon={faUserPen} />
-                  </button> */}
+                  <h1 className='lg:text-xl text-m text-bold mr-5'>{userInfo.nickname}</h1>
                 </div>
                 <div className="flex items-center">
                   <h1 className='lg:text-xl text-m lg:mr-9 mr-11'>User Wallet Address: </h1>
-                  <h1 className='lg:text-xl text-m text-bold'>0x542e043E7fDA4672e6eBD26Ebca2d00eF4c4ccfe</h1>
+                  <h1 className='lg:text-xl text-m text-bold'>{account}</h1>
+                </div>
+                <div className="flex items-center">
+                  <h1 className='lg:text-xl text-m lg:mr-9 mr-11'>User&apos;s Grade: </h1>
+                  <h1 className='lg:text-xl text-m text-bold'>{userInfo.grade} (Point: {userInfo.gradePoint})</h1>
                 </div>
               </div>
             </div>
