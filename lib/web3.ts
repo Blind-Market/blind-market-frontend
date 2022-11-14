@@ -3,7 +3,8 @@ import { Contract } from "web3-eth-contract";
 import { AbiItem } from "web3-utils";
 import Web3 from "web3";
 
-import { BlindMarketABI } from '../contracts/abi/BLIND';
+// import { BlindMarketABI } from '../contracts/abi/BLIND';
+import { BlindABI } from '../contracts/abi/blind';
 
 /**
  * Get the currently connected account wallet address from Metamask
@@ -20,12 +21,43 @@ const useAccount = () => {
         method: "eth_requestAccounts",
       });
 
-      if (accounts && Array.isArray(accounts)) {
-        setAccount(accounts[0]);
+      // check the crruent network Id that is mumbai network or not
+      if (window.ethereum.networkId !== 80001) {
+        await window.ethereum.request({
+          method: "wallet_switchEthereumChain",
+          params: [
+            {
+              chainId: Web3.utils.toHex(80001)
+            }
+          ]
+        })
       }
+
+      if (accounts && Array.isArray(accounts))
+        setAccount(accounts[0]);
+
     } catch (err) {
       console.log(err);
       setAccount("");
+      // This error code indicates that the chain has not been added to MetaMask
+      if (err.code == 4902) {
+        await window.ethereum.request({
+          method: "wallet_addEthereumChain",
+          params: [
+            {
+              chainId: Web3.utils.toHex(80001),
+              chianName: "Polygon Mumbai Testnet",
+              nativeCurrency: {
+                name: "MATIC",
+                symbol: "MATIC",
+                decimels: 18,
+              },
+              rpcUrls: ["https://rpc-membai.maticvigil.com"],
+              blockExplorerUrls: ["https://polygonscan.com"]
+            }
+          ]
+        });
+      }
     }
   };
 
@@ -70,15 +102,14 @@ const useWeb3 = () => {
   /**
    * Get the smart contract to use and set the smart contract instance
    * 
-   * @param {number} networkId 
-   *          The blockchain network id to use
+   * @param {void}
    * @returns {void}
    */
-  const getContract = (networkId: number) => {
+  const getContract = () => {
     if (!web3) return;
-    const contractJSON = JSON.parse(JSON.stringify(BlindMarketABI));
-    const abi: AbiItem = contractJSON.abi;
-    const ca: string = contractJSON.networks[networkId].address;
+
+    const abi: AbiItem = JSON.parse(JSON.stringify(BlindABI));
+    const ca: string = `${process.env.NEXT_PUBLIC_CONTRACT_ADDRESS}`;
     const instance = new web3.eth.Contract(abi, ca);
     setContract(instance);
   };
@@ -86,10 +117,7 @@ const useWeb3 = () => {
   useEffect(() => {
     if (!web3) getWeb3();
     else {
-      (async () => {
-        const networkId: number = await web3.eth.net.getId();
-        getContract(networkId);
-      })();
+      (async () => {getContract();})();
     }
   }, [web3]);
 

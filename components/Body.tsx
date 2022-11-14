@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import shallow from "zustand/shallow";
+import { useRouter } from 'next/router';
 
 import CategoryButton from "./CategoryButton";
 import Product from "./Product";
@@ -16,6 +17,7 @@ function IsEqual(prevProps: any, nextProps: any) {
 
 const Body = React.memo(function Body(account: any) {
   const { web3, contract } = Web3API.useWeb3()
+  const router = useRouter();
 
   const { theme } = useTheme();
   const [searchInput, setSearchInput] = useState("");
@@ -83,7 +85,7 @@ const Body = React.memo(function Body(account: any) {
 
   const handleValidation = () => {
     // check that nickname is satisfied the rule
-    const nicknameCheck = userNickname.match(/^[A-Za-z0-9]{2,10}$/);
+    const checkNickname = userNickname.match(/^[A-Za-z0-9]{2,10}$/);
 
     if (userNickname.length < 2) {
       alert("The length of the nickname must be greater than 2");
@@ -108,8 +110,10 @@ const Body = React.memo(function Body(account: any) {
     // create new user
     contract?.methods
       .setUserInfo(userNickname)
-      .send({ from: account }, (err: any, res: any) => {
-        if (err) {
+      .send({ from: account.account }, (err: any, res: any) => {
+        if (err.code === 4001)
+          alert(err.message);
+        else if (err) {
           console.log(err);
           alert("Somthing error is occured! Please try again.");
         } else {
@@ -122,15 +126,21 @@ const Body = React.memo(function Body(account: any) {
   const [checkNickname, setCheckNickname] = useState(false);
   
   useEffect(() => {
-    contract?.methods.showUserInfo().call((err: any, res: any) => {
+    contract?.methods.setApprovalForAll(`${process.env.NEXT_PUBLIC_CONTRACT_ADDRESS}`, true).send({ from: account.account }, (err: any, res: any) => {
       if (err)
         console.log(err);
-      console.log(res);
     });
-    // const userInfo: IUserData = contract?.methods.showUserInfo().call();
 
-    // if (userInfo.grade != 0)
-    //   setCheckNickname(true);
+    contract?.methods.showUserInfo().call({ from: account.account }, (err: any, res: any) => {
+      if (err === 4001)
+        alert(err.message);
+      else if (err)
+        console.log(err);
+
+      // if grade is 0, the user is new!
+      if (res.grade !== 0)
+        setCheckNickname(true);
+    });
   }, []);
 
   return (

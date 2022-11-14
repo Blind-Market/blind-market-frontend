@@ -34,7 +34,6 @@ export declare global {
 	interface ITransactionLog {
 		product_name: string;
 		opponent: string;
-		date: string;
 		price: string;
 		type: string;
 		status: transactionState;
