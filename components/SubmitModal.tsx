@@ -10,7 +10,7 @@ const SubmitModal = React.memo(function SubmitModal({
       <div
         id="popup-modal"
         tabIndex={-1}
-        className="fixed top-0 left-0 bottom-0 min-h-screen w-full h-full flex justify-center items-center bg-opacity-20 bg-black"
+        className="z-50 fixed top-0 left-0 bottom-0 min-h-screen w-full h-full flex justify-center items-center bg-opacity-20 bg-black"
       >
         <div className="relative p-4 w-full max-w-md h-full md:h-auto">
           <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
@@ -51,9 +51,9 @@ const SubmitModal = React.memo(function SubmitModal({
                   d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 ></path>
               </svg>
-              <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+              <div className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
                 {children}
-              </h3>
+              </div>
               <button
                 data-modal-toggle="popup-modal"
                 type="button"

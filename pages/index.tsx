@@ -1,16 +1,18 @@
 import type { NextPage } from "next";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+
 import shallow from "zustand/shallow";
 import Body from "../components/Body";
 import StoreAPI from "../lib/store";
 import Web3API from "../lib/web3";
+import UserAPI from '../lib/user';
 
-// MetaMask 연결 창
 const Home: NextPage = () => {
   var account = Web3API.useAccount();
-  const [connectWalletButtonEffect, setConnectWalletButtonEffect] =
-    useState(false);
+
+  const [connectWalletButtonEffect, setConnectWalletButtonEffect] = useState(false);
+  
   const { innerWidth, innerHeight, setWindowSize } = StoreAPI.useWindowSize(
     (state) => ({
       innerWidth: state.innerWidth,

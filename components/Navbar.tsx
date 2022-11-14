@@ -3,25 +3,29 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import shallow from "zustand/shallow";
-import AuthAPI from "../lib/auth";
-import StoreAPI from "../lib/store";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
+
 import NavButton from "./NavButton";
+import StoreAPI from "../lib/store";
+import Web3API from "../lib/web3"
 
 function IsEqual(prevProps: any, nextProps: any) {
   return prevProps == nextProps ? true : false;
 }
 
-const Navbar = React.memo(function Navbar(account: any) {
+const Navbar = React.memo(function Navbar() {
+  var account = Web3API.useAccount();
+
   const [connectModalOpen, setConnectModalOpen] = useState(false);
-  const [connectWalletButtonEffect, setConnectWalletButtonEffect] =
-    useState(false);
+  const [connectWalletButtonEffect, setConnectWalletButtonEffect] = useState(false);
 
   const BtnArray = useMemo(
     () => ({
       btnArr: [
         ["create entry", "/write"],
-        ["history", "/history"],
         ["chats", "/chat"],
+        [<FontAwesomeIcon icon={faUserCircle} size="2x" />, "/user"],
       ],
     }),
     []
@@ -45,14 +49,14 @@ const Navbar = React.memo(function Navbar(account: any) {
 
   return (
     <>
-      <nav className="flex items-center flex-wrap bg-black dark:bg-black p-3 border dark:border-slate-800 border-white">
+      <nav className="flex items-center flex-wrap bg-black p-3 dark:border-slate-800 border-x-0 border-t-0 border-b-2 border-white">
         {connectModalOpen ? (
           <div className="w-full h-full bg-black"></div>
         ) : (
           <></>
         )}
         <Link href="/">
-          <a className="inline-flex items-center p-2 gap-4">
+          <a className="inline-flex items-center p-2 gap-4 ml-10">
             {theme === "light" ? (
               <Image
                 src="/blindmarket_symbol_primary.png"
@@ -108,44 +112,45 @@ const Navbar = React.memo(function Navbar(account: any) {
           )}
           <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300"></span>
         </label>
-        <div className={`w-full lg:inline-flex lg:flex-grow lg:w-auto`}>
+        <div className={`w-full lg:inline-flex lg:flex-grow lg:w-auto mr-10`}>
           <div className="lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto w-full lg:items-center items-start gap-2 flex flex-col lg:h-auto">
-            {BtnArray.btnArr.map((value: any, index: number) => (
-              <NavButton btnText={value[0]} btnHref={value[1]} key={index} />
-            ))}
-            <button
-              type="button"
-              data-modal-toggle="crypto-modal"
-              className={`${
-                connectWalletButtonEffect && "animate-wiggle"
-              } bg-blue-600 p-3 text-white rounded hover:bg-blue-800 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center align-middle`}
-              onClick={() => {
-                setConnectWalletButtonEffect(true);
-                setConnectModalOpen(true);
-              }}
-              onAnimationEnd={() => setConnectWalletButtonEffect(false)}
-            >
-              {innerWidth > 1280 ? (
-                <svg
-                  aria-hidden="true"
-                  className="mr-2 w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-                  ></path>
-                </svg>
-              ) : (
-                <></>
-              )}
-              CONNECT WALLET
-            </button>
+            {account ? (
+              BtnArray.btnArr.map((value: any, index: number) => (<NavButton btnText={value[0]} btnHref={value[1]} key={index} />))
+            ) : (
+              <button
+                type="button"
+                data-modal-toggle="crypto-modal"
+                className={`${
+                  connectWalletButtonEffect && "animate-wiggle"
+                } bg-blue-800 text-white rounded hover:bg-blue-800 hover:shadow-xl lg:inline-flex lg:w-auto w-full h-full font-bold items-center justify-center px-3 py-3 align-middle cusor-progress`}
+                onClick={() => {
+                  setConnectWalletButtonEffect(true);
+                  setConnectModalOpen(true);
+                }}
+                onAnimationEnd={() => setConnectWalletButtonEffect(false)}
+              >
+                {innerWidth > 1280 ? (
+                  <svg
+                    aria-hidden="true"
+                    className="mr-2 w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                    ></path>
+                  </svg>
+                ) : (
+                  <></>
+                )}
+                CONNECT WALLET
+              </button>
+            )}
           </div>
         </div>
       </nav>

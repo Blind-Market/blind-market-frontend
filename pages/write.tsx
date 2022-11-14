@@ -1,9 +1,11 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import SubmitModal from "../components/SubmitModal";
-import Web3API from "../lib/web3";
 import { create } from "ipfs-http-client";
 import { useForm } from "react-hook-form";
+
+import SubmitModal from "../components/SubmitModal";
+
+import Web3API from "../lib/web3";
 
 enum ModalType {
   CancelModal,
@@ -24,20 +26,24 @@ const Write = React.memo(function Write() {
   const [modalChildren, setModalChildren] = useState("");
   const [modalType, setModalType] = useState<ModalType>();
 
-  const imgRef = useRef() as React.MutableRefObject<HTMLInputElement>;  // 뭐하는 얘지??
-
   const router = useRouter();
-  var account = Web3API.useAccount();
+
+  // The current user wallet address connected
+  const account = Web3API.useAccount();
+  // The web3 instance and the smart contract instance
+  // const {web3, contract } = Web3API.useWeb3();
 
   const titleHandler = (e: any) => {
     if (e.target.value.length < 20) {
       setTitle(e.target.value);
     }
   };
+
   const priceHandler = (e: any) => {
     var temp: number = +e.target.value;
     setPrice(temp ? temp : 0);
   };
+  
   const contentHandler = (e: any) => {
     var temp: string = e.target.value;
     if (temp.length < 500) {
@@ -120,6 +126,8 @@ const Write = React.memo(function Write() {
       );
     }
 
+    // Have to implement the logic to convert price from KRW to ETH
+
     const metadata = {
       metadata: {
         name: "Token Metadata",
@@ -139,15 +147,21 @@ const Write = React.memo(function Write() {
 
     const metadataCid = await client.add(JSON.stringify(metadata));
 
-    // Contract 호출 !
-    /*
-      contract 호출 함수들
-      1. mintNFT
-      2. Pending 전환 함수
-    */
+    // Call smart contract
+    // minting product using ipfs uri with mintProduct
+    // contract?.methods
+    //   .mintProduct(`https://blind-market.infura-ipfs.io/ipfs/${metadataCid}`)
+    //   .send({from: account}, (err, res) => {
+    //     if (err)
+    //       console.log("An error occured", err);
+    //     else
+    //       console.log("Hash of the transactions: " + res);
+    // });
+
+    router.push("/")
   };
 
-  // PHOTO
+  // Process of showing preview images
   interface UploadPhoto {
     photo: FileList;
   }
@@ -301,8 +315,8 @@ const Write = React.memo(function Write() {
                     className=" form-control block w-full px-3 py-1.5 text-base font-normal text-gray-800 bg-white dark:bg-blind_market border-b-2 cursor-pointer bg-clip-padding transition ease-in-out m-0 focus:text-gray-700 focus:bg-white border-0 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer  dark:placeholder-gray-400 dark:focus:ring-blue-500"
                     id="exampleNumber0"
                     placeholder="Price is necessary info!"
-                    onChange={(e: any) => setPrice(e.target.value)}
                     value={price}
+                    onChange={(e: any) => setPrice(e.target.value)}
                     onClick={(e: any) => console.log(e.target.value)}
                   />
                   <p
@@ -359,6 +373,32 @@ const Write = React.memo(function Write() {
               </div>
               <div
                 className={`${
+                  price >= 100 && price % 100 == 0
+                    ? "dark:bg-green-200 dark:text-green-800 text-green-700 bg-green-100"
+                    : "text-red-800 dark:text-red-900 bg-red-100 dark:bg-red-200"
+                } p-4 mb-4 text-sm`}
+                role="alert"
+              >
+                <svg
+                  aria-hidden="true"
+                  className="flex-shrink-0 inline w-5 h-5 mr-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
+                <span className="font-medium">Price is necessary field!</span>
+                <ul className="mt-1.5 ml-4 list-disc list-inside">
+                  <li className="mt-2">Please input proper price.</li>
+                </ul>
+              </div>
+              <div
+                className={`${
                   content.length > 0
                     ? "dark:bg-green-200 dark:text-green-800 text-green-700 bg-green-100"
                     : "text-red-800 dark:text-red-900 bg-red-100 dark:bg-red-200"
@@ -383,32 +423,6 @@ const Write = React.memo(function Write() {
                 </span>
                 <ul className="mt-1.5 ml-4 list-disc list-inside">
                   <li className="mt-2">Please input some description.</li>
-                </ul>
-              </div>
-              <div
-                className={`${
-                  price >= 100 && price % 100 == 0
-                    ? "dark:bg-green-200 dark:text-green-800 text-green-700 bg-green-100"
-                    : "text-red-800 dark:text-red-900 bg-red-100 dark:bg-red-200"
-                } p-4 mb-4 text-sm`}
-                role="alert"
-              >
-                <svg
-                  aria-hidden="true"
-                  className="flex-shrink-0 inline w-5 h-5 mr-3"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                    clipRule="evenodd"
-                  ></path>
-                </svg>
-                <span className="font-medium">Price is necessary field!</span>
-                <ul className="mt-1.5 ml-4 list-disc list-inside">
-                  <li className="mt-2">Please input proper price.</li>
                 </ul>
               </div>
             </div>

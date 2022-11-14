@@ -3,16 +3,19 @@ import { useTheme } from "next-themes";
 import Link from "next/link";
 import Image from "next/image";
 import shallow from "zustand/shallow";
+
 import StoreAPI from "../lib/store";
+import Web3API from "../lib/web3";
 
 const SubNavbar = React.memo(function SubNavbar() {
+  var account = Web3API.useAccount();
+
   const [drawerStatus, setDrawerStatus] = useState(false);
-  const [historyButtonEffect, setHistoryButtonEffect] = useState(false);
+  const [userButtonEffect, setUserButtonEffect] = useState(false);
   const [createButtonEffect, setCreateButtonEffect] = useState(false);
   const [chatButtonEffect, setChatButtonEffect] = useState(false);
   const [loginButtonEffect, setLoginButtonEffect] = useState(false);
-  const [connectWalletButtonEffect, setConnectWalletButtonEffect] =
-    useState(false);
+  const [connectWalletButtonEffect, setConnectWalletButtonEffect] = useState(false);
 
   const { theme, setTheme } = useTheme();
 
@@ -32,128 +35,182 @@ const SubNavbar = React.memo(function SubNavbar() {
   return (
     <nav className="bg-black">
       {drawerStatus ? (
-        <div
-          id="drawer-swipe"
-          className="fixed z-40 h-screen p-4 overflow-y-auto bg-white w-80 dark:bg-gray-800"
-          tabIndex={-1}
-          aria-labelledby="drawer-label"
-        >
-          <h5
-            id="drawer-label"
-            className="inline-flex items-center mb-4 text-base font-semibold text-gray-500 dark:text-gray-400"
+        account ? (
+          <div
+            id="drawer-swipe"
+            className="fixed z-40 h-screen p-4 overflow-y-auto bg-white w-80 dark:bg-gray-800"
+            tabIndex={-1}
+            aria-labelledby="drawer-label"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="w-6 h-6 mr-2"
+            <h5
+              id="drawer-label"
+              className="inline-flex items-center mb-4 text-base font-semibold text-gray-500 dark:text-gray-400"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5"
-              />
-            </svg>
-            Menu
-          </h5>
-          <button
-            type="button"
-            data-drawer-dismiss="drawer-example"
-            aria-controls="drawer-example"
-            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
-            onClick={() => setDrawerStatus(false)}
-          >
-            <svg
-              aria-hidden="true"
-              className="w-5 h-5"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              ></path>
-            </svg>
-            <span className="sr-only">Close menu</span>
-          </button>
-          <div className="grid grid-flow-row gap-8">
-            <Link href="/write">
-              <button
-                className={`${
-                  createButtonEffect && "animate-wiggle"
-                } bg-blue-600 p-3 text-white rounded hover:bg-blue-800 hover:shadow-xl w-full px-3 py-2 font-bold items-center justify-center`}
-                onClick={() => {
-                  setCreateButtonEffect(true);
-                }}
-                onAnimationEnd={() => setCreateButtonEffect(false)}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="w-6 h-6 mr-2"
               >
-                Create Entry
-              </button>
-            </Link>
-            <Link href="/history">
-              <button
-                className={`${
-                  historyButtonEffect && "animate-wiggle"
-                } bg-blue-600 p-3 text-white rounded hover:bg-blue-800 hover:shadow-xl w-full px-3 py-2 font-bold items-center justify-center`}
-                onClick={() => {
-                  setHistoryButtonEffect(true);
-                }}
-                onAnimationEnd={() => setHistoryButtonEffect(false)}
-              >
-                History
-              </button>
-            </Link>
-            <Link href="/chat">
-              <button
-                className={`${
-                  chatButtonEffect && "animate-wiggle"
-                } bg-blue-600 p-3 text-white rounded hover:bg-blue-800 hover:shadow-xl w-full px-3 py-2 font-bold items-center justify-center`}
-                onClick={() => {
-                  setChatButtonEffect(true);
-                }}
-                onAnimationEnd={() => setChatButtonEffect(false)}
-              >
-                Chats
-              </button>
-            </Link>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5"
+                />
+              </svg>
+              Menu
+            </h5>
             <button
               type="button"
-              data-modal-toggle="crypto-modal"
-              className={`${
-                connectWalletButtonEffect && "animate-wiggle"
-              } bg-blue-600 text-white rounded hover:bg-blue-800 hover:shadow-xl px-3 py-2 w-full font-bold`}
-              onClick={() => {
-                setConnectWalletButtonEffect(true);
-              }}
-              onAnimationEnd={() => setConnectWalletButtonEffect(false)}
+              data-drawer-dismiss="drawer-example"
+              aria-controls="drawer-example"
+              className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+              onClick={() => setDrawerStatus(false)}
             >
-              {innerWidth > 1280 ? (
-                <svg
-                  aria-hidden="true"
-                  className="mr-2 w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-                  ></path>
-                </svg>
-              ) : (
-                <></>
-              )}
-              Connect wallet
+              <svg
+                aria-hidden="true"
+                className="w-5 h-5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                ></path>
+              </svg>
+              <span className="sr-only">Close menu</span>
             </button>
+            <div className="grid grid-flow-row gap-8">
+              <Link href="/user">
+                <button
+                  className={`${
+                    userButtonEffect && "animate-wiggle"
+                  } bg-blue-600 p-3 text-white rounded hover:bg-blue-800 hover:shadow-xl w-full px-3 py-2 font-bold items-center justify-center`}
+                  onClick={() => {
+                    setUserButtonEffect(true);
+                  }}
+                  onAnimationEnd={() => setUserButtonEffect(false)}
+                >
+                  User
+                </button>
+              </Link>
+              <Link href="/chat">
+                <button
+                  className={`${
+                    chatButtonEffect && "animate-wiggle"
+                  } bg-blue-600 p-3 text-white rounded hover:bg-blue-800 hover:shadow-xl w-full px-3 py-2 font-bold items-center justify-center`}
+                  onClick={() => {
+                    setChatButtonEffect(true);
+                  }}
+                  onAnimationEnd={() => setChatButtonEffect(false)}
+                >
+                  Chats
+                </button>
+              </Link>
+              <Link href="/write">
+                <button
+                  className={`${
+                    createButtonEffect && "animate-wiggle"
+                  } bg-blue-600 p-3 text-white rounded hover:bg-blue-800 hover:shadow-xl w-full px-3 py-2 font-bold items-center justify-center`}
+                  onClick={() => {
+                    setCreateButtonEffect(true);
+                  }}
+                  onAnimationEnd={() => setCreateButtonEffect(false)}
+                >
+                  Create Entry
+                </button>
+              </Link>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div
+            id="drawer-swipe"
+            className="fixed z-40 h-screen p-4 overflow-y-auto bg-white w-80 dark:bg-gray-800"
+            tabIndex={-1}
+            aria-labelledby="drawer-label"
+          >
+            <h5
+              id="drawer-label"
+              className="inline-flex items-center mb-4 text-base font-semibold text-gray-500 dark:text-gray-400"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="w-6 h-6 mr-2"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5"
+                />
+              </svg>
+              Menu
+            </h5>
+            <button
+              type="button"
+              data-drawer-dismiss="drawer-example"
+              aria-controls="drawer-example"
+              className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+              onClick={() => setDrawerStatus(false)}
+            >
+              <svg
+                aria-hidden="true"
+                className="w-5 h-5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                ></path>
+              </svg>
+              <span className="sr-only">Close menu</span>
+            </button>
+            <div className="grid grid-flow-row gap-8">
+              <button
+                type="button"
+                data-modal-toggle="crypto-modal"
+                className={`${
+                  connectWalletButtonEffect && "animate-wiggle"
+                } bg-blue-600 text-white rounded hover:bg-blue-800 hover:shadow-xl px-3 py-2 w-full font-bold mt-10`}
+                onClick={() => {
+                  setConnectWalletButtonEffect(true);
+                }}
+                onAnimationEnd={() => setConnectWalletButtonEffect(false)}
+              >
+                {innerWidth > 1280 ? (
+                  <svg
+                    aria-hidden="true"
+                    className="mr-2 w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                    ></path>
+                  </svg>
+                ) : (
+                  <></>
+                )}
+                Connect wallet
+              </button>
+            </div>
+          </div>
+        )
       ) : (
         <></>
       )}

@@ -18,7 +18,7 @@ function Sidebar({ isOpen }: any) {
       title: "Chat3",
     },
     {
-      href: "/history",
+      href: "/user",
       title: "Chat4",
     },
   ];

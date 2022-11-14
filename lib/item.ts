@@ -98,56 +98,56 @@ const getSingleItem = (cid: any, account: any) =>
 		.then((res) => res.data.result)
 		.catch((err) => console.log(err));
 
-/**
- * API call function for creating item
- * @param {string} cid 
- * 			Item cid
- * @param {string} category 
- * 			Item category
- * @param {string} title 
- * 			Item title
- * @param {string} description 
- * 			Item description
- * @param {Array.<string>} images 
- * 			Item images
- * @param {number} price 
- * 			Item price
- * @param {string} address 
- * 			The wallet address of the user who creat the item
- * 
- * 
- * @typedef {Object} ReturnObject
- * @property {string} cid - Item cid
- * @property {string} category - Item category (lower case)
- * @property {string} title - Item title
- * @property {string} description - Item description
- * @property {Array.<string>} images - Attached Image URIs list
- * @property {number} price - Item price
- * @property {string} - The wallet address of the user who creat the item
- * 
- * @returns {ReturnObject} - ReturnObject object
- */
-const createItem = async (
-	cid: string,
-	category: string,
-	title: string,
-	description: string,
-	images: string[],
-	price: number,
-	address: string
-) => {
-	return axios.post('/item/create', {
-		cid: cid,
-		category: category,
-		title: title,
-		description: description,
-  		images: images,
-		price: price,
-	  	address: address
-	})
-	.then((res) => res.data)
-	.catch((err) => console.log(err));
-};
+// /**
+//  * API call function for creating item
+//  * @param {string} cid 
+//  * 			Item cid
+//  * @param {string} category 
+//  * 			Item category
+//  * @param {string} title 
+//  * 			Item title
+//  * @param {string} description 
+//  * 			Item description
+//  * @param {Array.<string>} images 
+//  * 			Item images
+//  * @param {number} price 
+//  * 			Item price
+//  * @param {string} address 
+//  * 			The wallet address of the user who creat the item
+//  * 
+//  * 
+//  * @typedef {Object} ReturnObject
+//  * @property {string} cid - Item cid
+//  * @property {string} category - Item category (lower case)
+//  * @property {string} title - Item title
+//  * @property {string} description - Item description
+//  * @property {Array.<string>} images - Attached Image URIs list
+//  * @property {number} price - Item price
+//  * @property {string} - The wallet address of the user who creat the item
+//  * 
+//  * @returns {ReturnObject} - ReturnObject object
+//  */
+// const createItem = async (
+// 	cid: string,
+// 	category: string,
+// 	title: string,
+// 	description: string,
+// 	images: string[],
+// 	price: number,
+// 	address: string
+// ) => {
+// 	return axios.post('/item/create', {
+// 		cid: cid,
+// 		category: category,
+// 		title: title,
+// 		description: description,
+//   		images: images,
+// 		price: price,
+// 	  	address: address
+// 	})
+// 	.then((res) => res.data)
+// 	.catch((err) => console.log(err));
+// };
 
 
 /**
@@ -247,7 +247,7 @@ const setUnlikeItem = (cid: any, account: any) =>
 const ItemAPI = {
 	getSingleItem,
 	getMultipleItem,
-	createItem,
+	// createItem,
 	updateItem,
 	deleteItem,
 	setLikeItem,
