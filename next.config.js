@@ -20,6 +20,10 @@ const nextConfig = {
       //   source: "/user/delete",
       //   destination: `${process.env.NEXT_API_ENDPOINT}/user/address`,
       // },
+      {
+        source: "/check_nickname/:path*",
+        destination: `${process.env.NEXT_API_ENDPOINT}/user/:path*/check`,
+      },
       // {
       //   source: "/private_key",
       //   destination: `${process.env.NEXT_API_ENDPOINT}/auth/private`,

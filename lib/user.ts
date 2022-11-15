@@ -108,11 +108,27 @@ const updateUser = async (address: string, nickname: string) => {
 // 	.catch((err) => console.log(err));
 // };
 
+const checkNickname = async (nickname: string): Promise<any> => {
+	axios
+		.get(`/check_nickname/${nickname}`)
+		.then((res) => {
+			const status = res.data.status;
+			if (status === 200)
+				return true;
+			else if (status === 409)
+				return false;
+			else
+				throw new Error("Error : Error is occured when check the user nickname");
+		})
+		.catch((err) => console.log(err));
+};
+
 const UserAPI = {
 	createUser,
 	// getUserInfo,
 	updateUser,
 	// deleteUser,
+	checkNickname,
 };
   
 export default UserAPI;

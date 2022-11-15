@@ -10,14 +10,17 @@ import Product from "./Product";
 import { useDefaultInfinityScrollQuery } from "../lib/utils";
 import StoreAPI from "../lib/store";
 import Web3API from "../lib/web3";
+import UserAPI from '../lib/user';
 
 function IsEqual(prevProps: any, nextProps: any) {
   return prevProps == nextProps ? true : false;
 }
 
-const Body = React.memo(function Body(account: any) {
-  const { web3, contract } = Web3API.useWeb3()
+const Body = React.memo(function Body(account: any, haveNickname: any) {
   const router = useRouter();
+  const { web3, contract } = Web3API.useWeb3()
+
+  const [userNickname, setUserNickname] = useState("");
 
   const { theme } = useTheme();
   const [searchInput, setSearchInput] = useState("");
@@ -81,9 +84,7 @@ const Body = React.memo(function Body(account: any) {
     []
   );
 
-  const [userNickname, setUserNickname] = useState("");
-
-  const handleValidation = () => {
+  const handleValidation = async () => {
     // check that nickname is satisfied the rule
     const checkNickname = userNickname.match(/^[A-Za-z0-9]{2,10}$/);
 
@@ -91,57 +92,54 @@ const Body = React.memo(function Body(account: any) {
       alert("The length of the nickname must be greater than 2");
       setUserNickname("");
       return false;
-    } else if (userNickname.length > 10) {
+    }
+    if (userNickname.length > 10) {
       alert("The length of the nickname must be less than 10");
       setUserNickname("");
       return false;
-    } else if (checkNickname) {
+    }
+    if (checkNickname) {
       alert("The nickname must have uppercase, lowercase alphabets and numbers");
       setUserNickname("");
       return false;
     }
 
     // check nickname reduplication
+    if (await UserAPI.checkNickname(userNickname) === false) {
+      alert("This nickname is already existed.\nPlease enter the another nickname.");
+      setUserNickname("");
+      return false;
+    }
 
     return true;
   }
 
-  const createNewUser = () => {
+  const createNewUser = async () => {
     // create new user
-    contract?.methods
+    const isSetUser = contract?.methods
       .setUserInfo(userNickname)
       .send({ from: account.account }, (err: any, res: any) => {
-        if (err.code === 4001)
+        if (err.code === 4001) {
           alert(err.message);
+          return false;
+        }
         else if (err) {
           console.log(err);
           alert("Somthing error is occured! Please try again.");
+          return false;
         } else {
           console.log("Hash of the transactions: " + res);
-          setCheckNickname(true);
+          return true;
         }
       });
+
+    if (isSetUser) {
+      // await UserAPI.createUser(account.account, userNickname);
+      setCheckNickname(true);
+    }
   };
 
-  const [checkNickname, setCheckNickname] = useState(false);
-  
-  useEffect(() => {
-    contract?.methods.setApprovalForAll(`${process.env.NEXT_PUBLIC_CONTRACT_ADDRESS}`, true).send({ from: account.account }, (err: any, res: any) => {
-      if (err)
-        console.log(err);
-    });
-
-    contract?.methods.showUserInfo().call({ from: account.account }, (err: any, res: any) => {
-      if (err === 4001)
-        alert(err.message);
-      else if (err)
-        console.log(err);
-
-      // if grade is 0, the user is new!
-      if (res.grade !== 0)
-        setCheckNickname(true);
-    });
-  }, []);
+  const [checkNickname, setCheckNickname] = useState(haveNickname);
 
   return (
     <div className="w-full relative min-h-screen z-0 bg-white dark:bg-blind_market">
@@ -236,9 +234,9 @@ const Body = React.memo(function Body(account: any) {
             />
             <button
               className='bg-blue-600 p-3 text-white rounded-r-md hover:bg-blue-800 hover:shadow-xl lg:inline-flex lg:w-auto w-fit h-10 px-3 py-2 font-bold items-center justify-center align-middle my-5'
-              onClick={() => {
-                if (handleValidation())
-                  createNewUser();
+              onClick={async () => {
+                if (await handleValidation())
+                  await createNewUser();
               }}
             >
               Confirm

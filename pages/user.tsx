@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-import { transactionState, TransactionLog } from "../components/TransactionLog";
+import TransactionLog from "../components/TransactionLog";
 import SubmitModal from '../components/SubmitModal';
 
 import Web3API from "../lib/web3";
@@ -20,94 +20,86 @@ const User = React.memo(function User() {
   const router = useRouter();
 
   const [reloadButtonEffect, setReloadButtonEffect] = useState(false);
-  const [deleteButtonEffect, setDeleteButtonEffect] = useState(false);
 
-  const userInfo: IUserData = contract?.methods.showUserInfo().call((err: any, res: any) => {
-    if (err) {
-      console.log(err);
-      alert("Somthing error is occured! Please try again.");
-    }
-  });
+  const gradeName = ['INVALID', 'NOOB', 'ROOKIE', 'MEMBER', 'BRONZE', 'SILVER', 'GLOD', 'PLATINUM', 'DIAMOND'];
 
-  const transactionLogs = () => {
-    var metadataList: string[] = [];
-    var transactionLogs: ITransactionLog[] = [];
+  const [gradePoint, setGradePoint] = useState(0);
+  const [grade, setGrade] = useState(0);
+  const [nickname, setNickname] = useState("");
+  const [transactionLogs, setTransactionLogs] = useState<ITransactionLog[]>([]);
 
-    const requestList: IRequest[] = contract?.methods.showTradeInfo().call((err: any, res: any) => {
-      if (err) {
+  if (account) {
+    contract?.methods.isApprovedForAll(account, `${process.env.NEXT_PUBLIC_CONTRACT_ADDRESS}`).call((err: any, res: any) => {
+      if (err)
         console.log(err);
-        alert("Somthing error is occured! Please try again.");
-      }
-    });
-
-    requestList.map((value: IRequest, index: number) => {
-      metadataList.push(contract?.methods.showTokenURI(value.token_id).call((err: any, res: any) => {
-        if (err) {
-          console.log(err);
-          alert("Somthing error is occured! Please try again.");
-        }
-      }));
-    });
-
-    requestList.map((value: IRequest, index: number) => {
-      axios.get(metadataList[index])
-        .then((res) => {
-          transactionLogs.push({
-            product_name: res.data.price,
-            opponent: value.buyer,
-            date: res.data.created_at,
-            price: res.data.price,
-            type: value.phase,
-            status: value.phase,
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-          alert("Somthing error is occured! Please try again.");
+      else if (res == false)
+        router.push('/');
+      else {
+        // get user data
+        contract?.methods.showUserInfo().call({ from: account }, (err: any, res: any) => {
+          if (err) {
+            console.log("showUserInfo(): " + err);
+            alert("Somthing error is occured!\nPlease try again.");
+          }
+          else {
+            setGradePoint(res.gradePoint);
+            setGrade(res.grade);
+            setNickname(res.nickname);
+          }
         });
+      }
     });
   }
 
-  const data: ITransactionLog = {
-    product_name: "Example TransactionLog",
-    opponent: "Example Opponent",
-    date: "Example Date",
-    price: "Example Price",
-    type: "Example Type",
-    status: 0,
-  };
-  const data2: ITransactionLog = {
-    product_name: "Example TransactionLog",
-    opponent: "Example Opponent",
-    date: "Example Date",
-    price: "Example Price",
-    type: "Example Type",
-    status: 1,
-  };
-  const data3: ITransactionLog = {
-    product_name: "Example TransactionLog",
-    opponent: "Example Opponent",
-    date: "Example Date",
-    price: "Example Price",
-    type: "Example Type",
-    status: 2,
-  };
-  const data4: ITransactionLog = {
-    product_name: "Example TransactionLog",
-    opponent: "Example Opponent",
-    date: "Example Date",
-    price: "Example Price",
-    type: "Example Type",
-    status: 1,
-  };
-  const data5: ITransactionLog = {
-    product_name: "Example TransactionLog",
-    opponent: "Example Opponent",
-    date: "Example Date",
-    price: "Example Price",
-    type: "Example Type",
-    status: 3,
-  };
+  // get transaction logs using smart contract
+  const getTransactionLogs = () => {
+    var Logs: ITransactionLog[] = [];
+
+    const requestList: IRequest[] = contract?.methods.showTradeLog().call({ from: account }, (err: any, res: any) => {
+      if (err) {
+        console.log("showTradeLog(): " + err);
+        return [];
+      } else {
+        return res;
+      }
+    });
+
+    if (requestList !== undefined) {
+      requestList.map((value: IRequest, index: number) => {
+        const metadataURI = contract?.methods.showTokenURI(value.token_id).call((err: any, res: any) => {
+          if (err) {
+            console.log("showTokenURI: " + err);
+            alert("Somthing error is occured! Please try again.");
+          }
+          return res;
+        });
+  
+        axios.get(metadataURI)
+          .then((res) => {
+            const type = account == res.data.sellerAddress ? "Sell" : "Buy";
+            const oppnent = type == "Sell" ? res.data.buyer : res.data.seller;
+            
+            Logs.push({
+              product_name: res.data.price,
+              opponent: oppnent,
+              price: res.data.price,
+              type: type,
+              status: value.phase,
+            });
+          })
+          .catch((err) => {
+            console.log("get metadataURI:" + err);
+            alert("Somthing error is occured! Please try again.");
+          });
+      });
+    }
+
+    return setTransactionLogs(Logs);
+  }
+
+  useEffect(() => {
+    getTransactionLogs();
+  }, []);
 
   return (
     <>
@@ -118,16 +110,16 @@ const User = React.memo(function User() {
               <h1 className='lg:text-4xl text-2xl mb-5'>User Info</h1>
               <div className='mb-10'>
                 <div className='flex items-center mr-auto'>
-                  <h1 className='lg:text-xl text-m mr-20'>User Nickname:</h1>
-                  <h1 className='lg:text-xl text-m text-bold mr-5'>{userInfo.nickname}</h1>
+                  <h1 className='lg:text-xl text-m mr-20'>Nickname:</h1>
+                  <h1 className='lg:text-xl text-m text-bold mr-5'>{nickname}</h1>
                 </div>
                 <div className="flex items-center">
-                  <h1 className='lg:text-xl text-m lg:mr-9 mr-11'>User Wallet Address: </h1>
+                  <h1 className='lg:text-xl text-m lg:mr-9 mr-11'>Wallet Address: </h1>
                   <h1 className='lg:text-xl text-m text-bold'>{account}</h1>
                 </div>
                 <div className="flex items-center">
-                  <h1 className='lg:text-xl text-m lg:mr-9 mr-11'>User&apos;s Grade: </h1>
-                  <h1 className='lg:text-xl text-m text-bold'>{userInfo.grade} (Point: {userInfo.gradePoint})</h1>
+                  <h1 className='lg:text-xl text-m lg:mr-28 mr-24'>Grade: </h1>
+                  <h1 className='lg:text-xl lg:ml-1 ml-3 text-m text-bold'>{gradeName[grade]} (Point: {gradePoint})</h1>
                 </div>
               </div>
             </div>
@@ -155,12 +147,6 @@ const User = React.memo(function User() {
                   </th>
                   <th
                     scope="col"
-                    className="py-3 px-6 dark:bg-blind_market align-middle justify-center text-center items-center"
-                  >
-                    Date
-                  </th>
-                  <th
-                    scope="col"
                     className="py-3 px-6 align-middle justify-center text-center items-center"
                   >
                     Price
@@ -180,11 +166,7 @@ const User = React.memo(function User() {
                 </tr>
               </thead>
               <tbody>
-                <TransactionLog transaction={data} />
-                <TransactionLog transaction={data2} />
-                <TransactionLog transaction={data3} />
-                <TransactionLog transaction={data4} />
-                <TransactionLog transaction={data5} />
+                {transactionLogs.map((value: any, index: number) => (<TransactionLog transaction={value} key={index} />))}
               </tbody>
             </table>
             <div className='flex items-center'>
@@ -200,17 +182,6 @@ const User = React.memo(function User() {
                   } bg-blue-500 p-3 text-white rounded hover:bg-blue-700 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center uppercase`}
                 >
                   Reload
-                </button>
-                <button
-                  onClick={() => {
-                    setDeleteButtonEffect(true);
-                  }}
-                  onAnimationEnd={() => setDeleteButtonEffect(false)}
-                  className={`${
-                    deleteButtonEffect && "animate-wiggle"
-                  } bg-red-500 p-3 text-white rounded hover:bg-red-700 hover:shadow-xl lg:inline-flex lg:w-auto w-full px-3 py-2 font-bold items-center justify-center uppercase`}
-                >
-                  DELETE
                 </button>
               </div>
             </div>

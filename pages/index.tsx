@@ -10,6 +10,46 @@ import UserAPI from '../lib/user';
 
 const Home: NextPage = () => {
   var account = Web3API.useAccount();
+  const { web3, contract } = Web3API.useWeb3();
+  const [haveNickname, setHaveNickname] = useState(false);
+
+  if (account) {
+    contract?.methods.isApprovedForAll(account, `${process.env.NEXT_PUBLIC_CONTRACT_ADDRESS}`).call((err: any, res: any) => {
+      if (err)
+        console.log(err);
+      else if (res === false)
+      {
+        contract?.methods.setApprovalForAll(`${process.env.NEXT_PUBLIC_CONTRACT_ADDRESS}`, true).send({ from: account }, (err: any, res: any) => {
+          if (err)
+            console.log(err);
+        });
+
+        // check the user is existed or not
+        contract?.methods.showUserInfo().call({ from: account }, (err: any, res: any) => {
+          if (err === 4001)
+            alert(err.message);
+          else if (err)
+            console.log(err);
+
+          // if grade is 0, the user is new!
+          if (res.grade !== 0)
+            setHaveNickname(true);
+        });
+      }
+      else
+        // check the user is existed or not
+        contract?.methods.showUserInfo().call({ from: account }, (err: any, res: any) => {
+          if (err === 4001)
+            alert(err.message);
+          else if (err)
+            console.log(err);
+      
+          // if grade is 0, the user is new!
+          if (res.grade !== 0)
+            setHaveNickname(true);
+        }); 
+    });
+  }
 
   const [connectWalletButtonEffect, setConnectWalletButtonEffect] = useState(false);
   
@@ -44,7 +84,7 @@ const Home: NextPage = () => {
   return (
     <div className="bg-white dark:bg-blind_market flex h-full flex-col justify-center items-center">
       {account ? (
-        <Body account={account} />
+        <Body account={account} haveNickname={haveNickname} />
       ) : (
         <div className="bg-white dark:bg-blind_market w-full justify-center items-center align-middle flex-col flex">
           <h1 className="lg:text-4xl text-xl my-5 text-black dark:text-white font-bold">
@@ -57,9 +97,9 @@ const Home: NextPage = () => {
             className={`${
               connectWalletButtonEffect && "animate-wiggle"
             } bg-blue-600 p-3 text-white rounded hover:bg-blue-800 hover:shadow-xl lg:inline-flex lg:w-auto w-fit px-3 py-2 font-bold items-center justify-center align-middle my-5`}
-            onClick={() => {
+            onClick={async () => {
               setConnectWalletButtonEffect(true);
-              connectWallet();
+              await connectWallet();
             }}
             onAnimationEnd={() => setConnectWalletButtonEffect(false)}
           >

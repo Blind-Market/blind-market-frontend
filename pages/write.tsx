@@ -30,8 +30,9 @@ const Write = React.memo(function Write() {
 
   // The current user wallet address connected
   const account = Web3API.useAccount();
+
   // The web3 instance and the smart contract instance
-  // const {web3, contract } = Web3API.useWeb3();
+  const {web3, contract } = Web3API.useWeb3();
 
   const titleHandler = (e: any) => {
     if (e.target.value.length < 20) {
@@ -150,14 +151,14 @@ const Write = React.memo(function Write() {
 
     // Call smart contract
     // minting product using ipfs uri with mintProduct
-    // contract?.methods
-    //   .mintProduct(`https://blind-market.infura-ipfs.io/ipfs/${metadataCid}`)
-    //   .send({from: account}, (err, res) => {
-    //     if (err)
-    //       console.log("An error occured", err);
-    //     else
-    //       console.log("Hash of the transactions: " + res);
-    // });
+    contract?.methods
+      .mintProduct(`https://blind-market.infura-ipfs.io/ipfs/${metadataCid}`)
+      .send({ from: account }, (err: any, res: any) => {
+        if (err)
+          console.log("mintProduct: ", + err);
+        else
+          console.log("Hash of the transactions: " + res);
+    });
 
     router.push("/")
   };
