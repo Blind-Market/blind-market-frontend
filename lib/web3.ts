@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Contract } from "web3-eth-contract";
 import { AbiItem } from "web3-utils";
+import { useRouter } from "next/router";
 import Web3 from "web3";
 
 // import { BlindMarketABI } from '../contracts/abi/BLIND';
@@ -12,11 +13,18 @@ import { BlindABI } from '../contracts/abi/blind';
  * @returns {string} - the currently connected account wallet address
  */
 const useAccount = () => {
+  const router = useRouter();
   const [account, setAccount] = useState<string>("");
 
   const getAccount = async () => {
     try {
-      if (!window.ethereum) throw new Error("Error : No Metamask");
+      if (!window.ethereum) {
+        alert("You don't have metamask.\nPlease install metamask.");
+        // redirect metamask of chrome web store page in new tab
+        window.open('https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn', '_blank');
+        throw new Error("Error : No Metamask");
+      }
+    
       const accounts = await window.ethereum.request({
         method: "eth_requestAccounts",
       });
@@ -56,7 +64,7 @@ const useAccount = () => {
               blockExplorerUrls: ["https://polygonscan.com"]
             }
           ]
-        });
+        }).catch((e) => router.push('/'));
       }
     }
   };
