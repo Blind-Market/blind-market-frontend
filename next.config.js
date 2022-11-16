@@ -8,18 +8,6 @@ const nextConfig = {
         source: "/user/create",
         destination: `${process.env.NEXT_API_ENDPOINT}/user`,
       },
-      // {
-      //   source: "/user/info",
-      //   destination: `${process.env.NEXT_API_ENDPOINT}/user/nickname`,
-      // },
-      {
-        source: "/user/update",
-        destination: `${process.env.NEXT_API_ENDPOINT}/user`,
-      },
-      // {
-      //   source: "/user/delete",
-      //   destination: `${process.env.NEXT_API_ENDPOINT}/user/address`,
-      // },
       {
         source: "/check_nickname/:path*",
         destination: `${process.env.NEXT_API_ENDPOINT}/user/:path*/check`,
@@ -40,17 +28,21 @@ const nextConfig = {
         source: "/item/:path*",
         destination: `${process.env.NEXT_API_ENDPOINT}/item/:path*`,
       },
-      // {
-      //   source: "/item/create",
-      //   destination: `${process.env.NEXT_API_ENDPOINT}/item`,
-      // },
       {
         source: "/item/update",
         destination: `${process.env.NEXT_API_ENDPOINT}/item`,
       },
       {
-        source: "/item/delete",
+        source: "/item/:path*/delete",
         destination: `${process.env.NEXT_API_ENDPOINT}/item/:path*`,
+      },
+      {
+        source: "/item/:path/like",
+        destination: `${process.env.NEXT_API_ENDPOINT}/item/:path*/starred`,
+      },
+      {
+        source: "/item/:path/unlike",
+        destination: `${process.env.NEXT_API_ENDPOINT}/item/:path*/unstarred`,
       },
     ];
   },
