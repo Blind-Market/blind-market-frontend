@@ -30,8 +30,9 @@ const Write = React.memo(function Write() {
 
   // The current user wallet address connected
   const account = Web3API.useAccount();
+
   // The web3 instance and the smart contract instance
-  // const {web3, contract } = Web3API.useWeb3();
+  const {web3, contract } = Web3API.useWeb3();
 
   const titleHandler = (e: any) => {
     if (e.target.value.length < 20) {
@@ -60,10 +61,11 @@ const Write = React.memo(function Write() {
       throw new Error("Please install metamask!");
     }
 
-    if (!title || !content || !imgFiles) {
+    if (!title || !content || !imgFiles || price <= 0) {
       alert("Necessary part is not available");
       return;
     }
+
     setSubmitButtonEffect(true);
     setModalType(ModalType.SubmitModal);
     setModalChildren("Are you sure you want to submit?");
@@ -149,14 +151,14 @@ const Write = React.memo(function Write() {
 
     // Call smart contract
     // minting product using ipfs uri with mintProduct
-    // contract?.methods
-    //   .mintProduct(`https://blind-market.infura-ipfs.io/ipfs/${metadataCid}`)
-    //   .send({from: account}, (err, res) => {
-    //     if (err)
-    //       console.log("An error occured", err);
-    //     else
-    //       console.log("Hash of the transactions: " + res);
-    // });
+    contract?.methods
+      .mintProduct(`https://blind-market.infura-ipfs.io/ipfs/${metadataCid}`)
+      .send({ from: account }, (err: any, res: any) => {
+        if (err)
+          console.log("mintProduct: ", + err);
+        else
+          console.log("Hash of the transactions: " + res);
+    });
 
     router.push("/")
   };
@@ -230,7 +232,7 @@ const Write = React.memo(function Write() {
                   className="hidden"
                   id="multiple_files"
                   type="file"
-                  // onChange={(e) => imgFilesHandler(e)}
+                  onChange={(e) => imgFilesHandler(e)}
                   multiple
                 />
               </label>
@@ -256,7 +258,7 @@ const Write = React.memo(function Write() {
                   className="hidden"
                   id="multiple_files"
                   type="file"
-                  // onChange={(e) => imgFilesHandler(e)}
+                  onChange={(e) => imgFilesHandler(e)}
                   multiple
                 />
               </label>
@@ -327,21 +329,6 @@ const Write = React.memo(function Write() {
                   </p>
                 </div>
               </div>
-              {/* <div>
-                <label
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 min-w-max my-4"
-                  htmlFor="multiple_files"
-                >
-                  Upload multiple files
-                </label>
-                <input
-                  className="block transition ease-in-out text-sm text-gray-800 bg-white dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 border-1 cursor-pointer focus:outline-none "
-                  id="multiple_files"
-                  type="file"
-                  // onChange={(e) => imgFilesHandler(e)}
-                  multiple
-                />
-              </div> */}
             </div>
             <div className="grid grid-rows-3 visible">
               <div

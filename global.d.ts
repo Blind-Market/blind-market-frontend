@@ -13,10 +13,20 @@ export declare global {
 		starred: number;
 	}
 
+	// interface for trade information gotten from contract
+	interface IRequest {
+		token_id: number;
+		hash: number;
+		phase: number;
+		buyerAddress: string;
+		sellerAddress: string;
+		buyer: string;
+		seller: string;
+	}
+
 	interface ITransactionLog {
 		product_name: string;
 		opponent: string;
-		date: string;
 		price: string;
 		type: string;
 		status: transactionState;

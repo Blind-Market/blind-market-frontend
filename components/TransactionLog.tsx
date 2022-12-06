@@ -2,11 +2,11 @@ import assert from "assert";
 import React, { useState } from "react";
 
 export const transactionState = {
-  INVALID: -1,
-  DONE: 0,
+  INVALID: 0,
   PENDING: 1,
   SHIPPING: 2,
-  CANCELED: 3,
+  DONE: 3,
+  CANCELED: 4,
 };
 
 const buttonTypeHandler = (status: any): string => {
@@ -59,12 +59,6 @@ const TransactionLog = React.memo(function TransactionLog({
         className="px-6 dark:bg-gray-800 h-min items-center justify-center align-middle text-center"
       >
         {transaction.opponent}
-      </th>
-      <th
-        scope="col"
-        className="px-6 dark:bg-gray-800 h-min items-center justify-center align-middle text-center"
-      >
-        {transaction.date}
       </th>
       <th
         scope="col"
